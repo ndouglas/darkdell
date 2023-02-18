@@ -2,16 +2,31 @@
   "htmlElements": {
     "tags": [
       "a",
+      "base",
       "body",
+      "em",
       "h1",
       "h2",
+      "h3",
       "head",
       "html",
+      "link",
       "meta",
+      "p",
       "script",
+      "strong",
       "title"
     ],
-    "classes": null,
-    "ids": null
+    "classes": [
+      "no-js"
+    ],
+    "ids": [
+      "challenges",
+      "documenting-what-i-learn",
+      "joomla-wordpress-and-drupal-a-history-of-heartbreak",
+      "motivation",
+      "the-vagov-content-build-process-and-its-discontents",
+      "time"
+    ]
   }
 }

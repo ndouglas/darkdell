@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
 jobs:
 
-  # Deploy the blog to S3.
+  # Deploy the site to S3.
   deploy:
     name: Deploy
     runs-on: ubuntu-latest

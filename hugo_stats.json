@@ -2,8 +2,10 @@
   "htmlElements": {
     "tags": [
       "a",
+      "b",
       "base",
       "body",
+      "div",
       "em",
       "h1",
       "h2",
@@ -13,11 +15,15 @@
       "link",
       "meta",
       "p",
+      "path",
       "script",
+      "span",
       "strong",
+      "svg",
       "title"
     ],
     "classes": [
+      "inline-svg",
       "no-js"
     ],
     "ids": [

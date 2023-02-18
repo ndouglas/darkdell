@@ -16,6 +16,7 @@ categories: []
 # - HTML
 # - JavaScript
 # - Rust
+# - YAML
 languages: []
 # Tags:
 # - Cloud
@@ -25,6 +26,8 @@ languages: []
 # - Jamstack
 # - Ray Tracing
 tags: []
+keywords: []
+aliases: []
 repo_url: "https://github.com/ndouglas/{{ .Name | lower }}/"
 demo_url: "https://ndouglas.github.io/{{ .Name | lower }}/demo/"
 docs_url: "https://ndouglas.github.io/{{ .Name | lower }}/"

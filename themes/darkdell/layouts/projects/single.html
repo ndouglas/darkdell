@@ -1,0 +1,10 @@
+{{ partial "header.html" . }}
+<body>
+  <h1>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    {{ partial "project/link_icons.html" . }}
+  </h1>
+  {{ .Content }}
+  <a href="/projects/">Projects</a>
+</body>
+{{ partial "footer.html" . }}

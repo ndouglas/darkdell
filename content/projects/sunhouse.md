@@ -16,6 +16,8 @@ languages: []
 # - Graphics
 # - Ray Tracing
 tags: []
+keywords: []
+aliases: []
 repo_url: "https://github.com/ndouglas/sunhouse/"
 demo_url: "https://ndouglas.github.io/sunhouse/demo/"
 docs_url: "https://ndouglas.github.io/sunhouse/"

@@ -5,6 +5,7 @@
   <div>
     <h2>
       <a href="{{ .Permalink }}">{{ .Title }}</a>
+      {{ partial "project/link_icons.html" . }}
     </h2>
     <b>{{ .Params.subtitle }}</b>
     <div>{{ .Summary }}</div>

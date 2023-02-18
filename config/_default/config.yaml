@@ -1,0 +1,63 @@
+archetypeDir: 'archetypes'
+assetDir: 'assets'
+baseURL: 'https://darkdell.net/'
+buildDrafts: false
+buildExpired: false
+buildFuture: false
+canonifyURLs: false
+cleanDestinationDir: true
+contentDir: 'content'
+copyright: ''
+dataDir: 'data'
+defaultContentLanguage: 'en'
+defaultContentLanguageInSubdir: false
+disableAliases: false
+disableHugoGeneratorInject: false
+disableKinds: []
+disableLiveReload: false
+disablePathToLower: false
+enableEmoji: true
+enableGitInfo: true
+enableInlineShortcodes: true
+enableMissingTranslationPlaceholders: false
+enableRobotsTXT: true
+googleAnalytics: ''
+hasCJKLanguage: false
+languageCode: 'en-us'
+newContentEditor: ''
+noChmod: false
+noTimes: false
+paginate: 25
+paginatePath: 'page'
+permalinks: {}
+pluralizeListTitles: true
+publishDir: 'public'
+relativeURLs: false
+refLinksErrorLevel: 'ERROR'
+removePathAccents: true
+rssLimit: -1
+sectionPagesMenu: 'main'
+summaryLength: 100
+theme: 'darkdell'
+themesDir: 'themes'
+timeout: '30s'
+timeZone: 'America/New_York'
+title: 'Darkdell'
+titleCaseStyle: 'AP'
+uglyURLs: false
+watch: false
+
+description: 'Projects, bewilderments, mistakes, cataclysms, etc.'
+author:
+  name: 'Nathan Douglas'
+  email: 'blog@darkdell.net'
+  link: 'https://blog.darkdell.net'
+deployment:
+  targets:
+    - name: 's3'
+      URL: 's3://darkdell.www?region=us-east-1'
+      cloudFrontDistributionID: 'ERL3QRNQL3Q5K'
+taxonomies:
+  category: categories
+  language: languages
+  tag: tags

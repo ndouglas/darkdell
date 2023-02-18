@@ -1,0 +1,15 @@
+{{ partial "header.html" . }}
+<body>
+  <h1>Darkdell</h1>
+  {{ range .Sections }}
+  <h2>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+  </h2>
+  {{ end }}
+  {{ range first 10 .RegularPages }}
+  <h2>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+  </h2>
+  {{ end }}
+</body>
+{{ partial "footer.html" . }}

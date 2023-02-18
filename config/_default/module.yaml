@@ -1,0 +1,6 @@
+noProxy: none
+noVendor: ""
+private: '*.*'
+proxy: direct
+replacements: []
+workspace: "off"

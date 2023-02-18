@@ -1,0 +1,5 @@
+anchor: Smart
+bgColor: '#ffffff'
+hint: photo
+quality: 90
+resampleFilter: Box

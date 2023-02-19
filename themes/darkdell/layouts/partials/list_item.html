@@ -1,10 +1,10 @@
 <div>
-  <p>
+  {{ .Scratch.Get "list_item.headingOpen" | safeHTML }}
     <a href="{{ .Permalink }}">
       <strong>{{ .Title }}</strong>
     </a>
     {{ partial "link_project_icons.html" . }}
-  </p>
+  {{ .Scratch.Get "list_item.headingClose" | safeHTML }}
   <p>
     <strong>{{ .Params.subtitle }}</strong>
   </p>

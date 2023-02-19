@@ -8,6 +8,9 @@
     <title> {{ .Title }} | Darkdell </title>
     <link rel="canonical" href="{{ .Permalink }}">
     <link href="/index.xml" rel="alternate" type="application/rss+xml" title="{{ .Title }}">
+    {{ $sass := resources.Get "sass/main.scss" }}
+    {{ $style := $sass | resources.ToCSS | resources.Minify | resources.Fingerprint }}
+    <link rel="stylesheet" href="{{ $style.Permalink }}" integrity="{{ $style.Data.Integrity }}">
     {{ range .Site.Params.custom_css }}
       <link rel="stylesheet" href="{{ . | absURL }}">
     {{ end }}

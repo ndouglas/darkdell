@@ -1,7 +1,5 @@
 <!-- eslint-disable -->
 <span class="inline-svg">
   {{ $fname:=print "fontawesome/" . ".svg" }}
-  {{ $path:="<path" }}
-  {{ $fill:="<path fill=\"currentColor\"" }}
-  {{ replace (readFile $fname) $path $fill | safeHTML }}
+  {{ readFile $fname | safeHTML }}
 </span>

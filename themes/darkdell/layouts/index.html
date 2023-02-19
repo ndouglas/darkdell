@@ -1,10 +1,13 @@
 {{ define "content" }}
+  {{ .Content }}
   {{ range site.Sections }}
     <h2>
       <a href="{{ .Permalink }}">{{ .Title }}</a>
     </h2>
     {{ with ( where site.RegularPages ".Section" .Params.Identifier ) }}
       {{ range first 50 . }}
+        {{ .Scratch.Set "list_item.headingOpen" "<h3>" }}
+        {{ .Scratch.Set "list_item.headingClose" "</h3>" }}  
         {{ partial "list_item.html" . }}
       {{ end }}
     {{ end }}

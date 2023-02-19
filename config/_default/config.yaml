@@ -11,6 +11,7 @@ copyright: ''
 dataDir: 'data'
 defaultContentLanguage: 'en'
 defaultContentLanguageInSubdir: false
+description: 'Projects, bewilderments, mistakes, cataclysms, etc.'
 disableAliases: false
 disableHugoGeneratorInject: false
 disableKinds: []
@@ -46,18 +47,3 @@ title: 'Darkdell'
 titleCaseStyle: 'AP'
 uglyURLs: false
 watch: false
-
-description: 'Projects, bewilderments, mistakes, cataclysms, etc.'
-author:
-  name: 'Nathan Douglas'
-  email: 'blog@darkdell.net'
-  link: 'https://blog.darkdell.net'
-deployment:
-  targets:
-    - name: 's3'
-      URL: 's3://darkdell.www?region=us-east-1'
-      cloudFrontDistributionID: 'ERL3QRNQL3Q5K'
-taxonomies:
-  category: categories
-  language: languages
-  tag: tags

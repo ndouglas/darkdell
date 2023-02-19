@@ -1,0 +1,47 @@
+$light_sky_blue: #87CEFA;
+$deep_sky_blue:	#00BFFF;
+$cornflower_blue: #6495ED;
+$medium_slate_blue: #7B68EE;
+$maroon: #941352;
+$white: #fffdfa;
+$black: #454545;
+
+a {
+  color: $cornflower_blue;
+
+  .inline-svg {
+    color: $cornflower_blue;
+    text-decoration: none;
+    fill: $cornflower_blue;
+  }
+
+}
+
+a:visited {
+  color: $maroon;
+
+  .inline-svg {
+    color: $maroon;
+    text-decoration: none;
+    fill: $maroon;
+  }
+
+}
+
+html {
+  background-color: $white;
+  color: $black;
+}
+
+html.inverse {
+  background-color: $black;
+  color: $white;
+}
+
+.inline-svg {
+  display: inline-block;
+  height: 1.15rem;
+  width: 1.15rem;
+  top: 0.15rem;
+  position: relative;
+}

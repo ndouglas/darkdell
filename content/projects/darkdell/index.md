@@ -9,6 +9,7 @@ languages:
   - HTML
   - Go Templates
   - JavaScript
+  - Sass
   - YAML
 tags:
   - Cloud

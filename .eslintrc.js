@@ -9,7 +9,20 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.html'],
+      files: ['public/**/*.html'],
+      parser: '@html-eslint/parser',
+      extends: ['plugin:@html-eslint/recommended'],
+      rules: {
+        '@html-eslint/require-closing-tags': 'off',
+        '@html-eslint/no-multiple-empty-lines': ['error', {
+          max: 0
+        }],
+        '@html-eslint/indent': ['error', 2],
+        'spaced-comment': 'off'
+      }
+    },
+    {
+      files: ['themes/darkdell/layouts/**/*.html'],
       parser: '@html-eslint/parser',
       extends: ['plugin:@html-eslint/recommended'],
       rules: {
@@ -27,8 +40,7 @@ module.exports = {
     '.yarn/**',
     'dist/**',
     'vendor/**',
-    'node_modules/**',
-    'public/**'
+    'node_modules/**'
   ],
   rules: {
     indent: ['error', 2],

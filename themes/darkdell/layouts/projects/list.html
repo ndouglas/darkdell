@@ -1,4 +1,5 @@
 {{ define "content" }}
+  {{ .Content }}
   {{ range first 10 .RegularPages }}
     {{ partial "list_item.html" . }}
   {{ end }}

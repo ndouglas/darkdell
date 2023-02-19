@@ -36,4 +36,3 @@ subtitle: 'A brief subtitle of the project.'
 ---
 A longer introduction to the project, about a paragraph.
 <!--more-->
-

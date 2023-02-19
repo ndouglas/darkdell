@@ -20,4 +20,3 @@ subtitle: 'A simple ray tracer built in Rust.'
 ---
 Graphics programming, and especially 3-D rendering, has always been intimidating to me.
 <!--more-->
-

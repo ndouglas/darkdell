@@ -68,9 +68,9 @@ And no database updates.  No separate assets to manage.  No usernames and passwo
 
 ### Documenting What I Learn
 
-I've forgotten more than I'll ever know about computing :weary: 
+I've forgotten more than I'll ever know about computing :weary:
 
-I'd like to think I have a good few decades left in my career, but up until now I've relied on my memory and ability to learn quickly.  Realistically, I need to strategize for the years ahead, and build a solid system for referencing my own solutions.  
+I'd like to think I have a good few decades left in my career, but up until now I've relied on my memory and ability to learn quickly.  Realistically, I need to strategize for the years ahead, and build a solid system for referencing my own solutions.
 
 A friend and coworker has mentioned that he uses the internet as a mind map, and I certainly find his notes to himself scattered around GitHub, Drupal.org, StackOverflow, etc more frequently than I'd expect.  I do that already, to some extent, but I also hate opening issues on GitHub to rubber-duck a problem.  I'm a little too hesitant to use the internet as my notepad.
 
@@ -82,3 +82,6 @@ Plus, the internet has a nasty habit of losing things you value.  "The internet 
 
 Time is the biggest challenge in building this.  Not time for maintenance, of course, since this approach largley dispenses with maintenance.  But rather than starting with a theme developed by someone else, I have to build this thing from scratch.  I'm intimidated by design and accessibility concerns, but I also want to do this well.  So this involves a lot of research and learning new things in areas that I don't find intrinsically motivating.  And I frankly don't know if anyone else will ever see this, so just doing _anything_ is a little extra difficult.
 
+## Approach
+
+I guess I'm kicking it old-school here; just adding things as I think of them :shrug:.  I don't really have a grand vision of this thing other than that I'll be able to share some relatively meaningful summaries of the projects I'm working on as I start them.

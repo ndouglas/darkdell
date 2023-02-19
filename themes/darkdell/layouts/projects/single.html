@@ -1,10 +1,11 @@
-{{ partial "header.html" . }}
-<body>
-  <h1>
-    <a href="{{ .Permalink }}">{{ .Title }}</a>
-    {{ partial "project/link_icons.html" . }}
-  </h1>
-  {{ .Content }}
-  <a href="/projects/">Projects</a>
-</body>
-{{ partial "footer.html" . }}
+{{ define "title" }}
+<h1>
+  <a href="{{ .Permalink }}">{{ .Title }}</a>
+  {{ partial "projects/link_icons.html" . }}
+</h1>
+{{ end }}
+{{ define "content" }}
+{{ .Content }}
+<div>{{ partial "projects/tag_list.html" . }}</div>
+<a href="/projects/">Projects</a>
+{{ end }}

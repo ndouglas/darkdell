@@ -1,15 +1,14 @@
-{{ partial "header.html" . }}
-<body>
-  <h1>{{ .Title }}</h1>
-  {{ range first 10 .RegularPages }}
-  <div>
-    <h2>
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
-    </h2>
-    <b>{{ .Params.subtitle }}</b>
-    <div>{{ .Summary }}</div>
-    <a href="{{ .Permalink }}">Read more...</a>
-  </div>
-  {{ end }}
-</body>
-{{ partial "footer.html" . }}
+{{ define "content" }}
+{{ range first 10 .RegularPages }}
+<div>
+  <h2>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    {{ partial "projects/link_icons.html" . }}
+  </h2>
+  <b>{{ .Params.subtitle }}</b>
+  <div>{{ .Summary }}</div>
+  <div>{{ partial "projects/tag_list.html" . }}</div>
+  <a href="{{ .Permalink }}">Read more...</a>
+</div>
+{{ end }}
+{{ end }}

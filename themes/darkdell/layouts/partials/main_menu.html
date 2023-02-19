@@ -1,0 +1,13 @@
+{{ with .Site.Menus.main }}
+<nav>
+  <ul>
+    {{ range . }}
+    <li>
+      <a href="{{ .URL }}">{{ .Name | humanize }}</a>
+    </li>
+    {{ end }}
+  </ul>
+</nav>
+{{ else }}
+<!-- No menu entries present -->
+{{end}}

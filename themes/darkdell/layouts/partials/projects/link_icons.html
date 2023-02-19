@@ -1,0 +1,3 @@
+{{ if isset .Params "repo_url" }}<a class="inline-svg" href="{{ .Params.repo_url }}" aria-label="Source">{{ partial "fontawesome.html" "brands/github" }}</a>{{ end }}
+{{ if isset .Params "demo_url" }}<a class="inline-svg" href="{{ .Params.demo_url }}" aria-label="Demo">{{ partial "fontawesome.html" "solid/tv" }}</a>{{ end }}
+{{ if isset .Params "docs_url" }}<a class="inline-svg" href="{{ .Params.docs_url }}" aria-label="Documentation">{{ partial "fontawesome.html" "solid/book" }}</a>{{ end }}

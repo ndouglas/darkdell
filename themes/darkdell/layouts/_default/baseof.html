@@ -1,6 +1,51 @@
-{{ partial "header.html" . }}
-<body>
-  <h1>{{ .Title }}</h1>
-  {{ .Content }}
-</body>
-{{ partial "footer.html" . }}
+<!-- eslint-disable @html-eslint/require-closing-tags -->
+<!DOCTYPE html>
+<html class="no-js" lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+  {{ block "html" . }}
+  <head>
+    <meta charset="utf-8">
+    {{ with default .Summary .Description }}
+    <meta name="description" content="{{ . }}">
+    {{end}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="{{ .Site.BaseURL }}">
+    <title> {{ .Title }} | Darkdell </title>
+    <link rel="canonical" href="{{ .Permalink }}">
+    <link href="/index.xml" rel="alternate" type="application/rss+xml" title="{{ .Title }}">
+    {{ range .Site.Params.custom_css }}
+    <link rel="stylesheet" href="{{ . | absURL }}">
+    {{ end }}
+    {{ range .Params.custom_css }}
+    <link rel="stylesheet" href="{{ . | absURL }}">
+    {{ end }}
+  </head>
+  <body>
+    {{ block "body" . }}
+    {{ block "main_menu" . }}
+    {{ with .Site.Menus.main }}
+    <nav>
+      <ul>
+        {{ range . }}
+        <li>
+          <a href="{{ .URL }}">{{ .Name | humanize }}</a>
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+    {{ else }}
+    <!-- No menu entries present -->
+    {{ end }}
+    {{ end }}
+    {{ block "title" . }}
+    <h1>{{ .Title }}</h1>
+    {{ end }}
+    <div class="content">
+      {{ block "content" . }}
+      {{ .Content }}
+      {{ end }}
+    </div>
+    {{ end }}
+  </body>
+  {{ end }}
+</html>

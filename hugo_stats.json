@@ -12,17 +12,21 @@
       "h3",
       "head",
       "html",
+      "li",
       "link",
       "meta",
+      "nav",
       "p",
       "path",
       "script",
       "span",
       "strong",
       "svg",
-      "title"
+      "title",
+      "ul"
     ],
     "classes": [
+      "content",
       "inline-svg",
       "no-js"
     ],

@@ -1,0 +1,9 @@
+{{ range first 10 .Params.categories }}
+  {{ partial "link_category.html" ( $.Site.GetPage "/categories/" . ) }}
+{{ end }}
+{{ range first 10 .Params.languages }}
+  {{ partial "link_language.html" ( $.Site.GetPage "/languages/" . ) }}
+{{ end }}
+{{ range first 10 .Params.tags }}
+  {{ partial "link_tag.html" ( $.Site.GetPage "/tags/" . ) }}
+{{ end }}

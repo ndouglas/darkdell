@@ -1,14 +1,12 @@
 {{ define "content" }}
-{{ range site.Sections }}
-<h2>
-  <a href="{{ .Permalink }}">{{ .Title }}</a>
-</h2>
-{{ with ( where site.RegularPages ".Section" .Params.Identifier ) }}
-{{ range first 50 . }}
-<h3>
-  <a href="{{ .Permalink }}">{{ .Title }}</a>
-</h3>
-{{ end }}
-{{ end }}
-{{ end }}
+  {{ range site.Sections }}
+    <h2>
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </h2>
+    {{ with ( where site.RegularPages ".Section" .Params.Identifier ) }}
+      {{ range first 50 . }}
+        {{ partial "list_item.html" . }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
 {{ end }}

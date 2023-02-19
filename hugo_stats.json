@@ -2,11 +2,12 @@
   "htmlElements": {
     "tags": [
       "a",
-      "b",
+      "aside",
       "base",
       "body",
       "div",
       "em",
+      "footer",
       "h1",
       "h2",
       "h3",
@@ -14,6 +15,7 @@
       "html",
       "li",
       "link",
+      "main",
       "meta",
       "nav",
       "p",
@@ -26,7 +28,6 @@
       "ul"
     ],
     "classes": [
-      "content",
       "inline-svg",
       "no-js"
     ],

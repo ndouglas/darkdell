@@ -1,9 +1,0 @@
-{{ range first 10 .Params.categories }}
-{{ partial "categories/link.html" ( $.Site.GetPage "/categories/" . ) }}
-{{ end }}
-{{ range first 10 .Params.languages }}
-{{ partial "languages/link.html" ( $.Site.GetPage "/languages/" . ) }}
-{{ end }}
-{{ range first 10 .Params.tags }}
-{{ partial "tags/link.html" ( $.Site.GetPage "/tags/" . ) }}
-{{ end }}

@@ -1,0 +1,14 @@
+<div>
+  <p>
+    <a href="{{ .Permalink }}">
+      <strong>{{ .Title }}</strong>
+    </a>
+    {{ partial "link_project_icons.html" . }}
+  </p>
+  <p>
+    <strong>{{ .Params.subtitle }}</strong>
+  </p>
+  <p>{{ .Summary }}</p>
+  <p>{{ partial "list_project_tags.html" . }}</p>
+  <a href="{{ .Permalink }}">Read more...</a>
+</div>

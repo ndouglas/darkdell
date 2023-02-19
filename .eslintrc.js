@@ -13,7 +13,7 @@ module.exports = {
       parser: '@html-eslint/parser',
       extends: ['plugin:@html-eslint/recommended'],
       rules: {
-        '@html-eslint/indent': ['error', 2],
+        '@html-eslint/indent': 'off',
         '@html-eslint/require-doctype': 'off',
         'spaced-comment': 'off'
       }

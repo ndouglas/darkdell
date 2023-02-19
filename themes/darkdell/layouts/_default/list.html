@@ -1,14 +1,3 @@
 {{ define "content" }}
-{{ range first 10 .RegularPages }}
-<div>
-  <h2>
-    <a href="{{ .Permalink }}">{{ .Title }}</a>
-    {{ partial "projects/link_icons.html" . }}
-  </h2>
-  <b>{{ .Params.subtitle }}</b>
-  <div>{{ .Summary }}</div>
-  <div>{{ partial "projects/tag_list.html" . }}</div>
-  <a href="{{ .Permalink }}">Read more...</a>
-</div>
-{{ end }}
+  pls define me lol
 {{ end }}

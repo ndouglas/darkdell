@@ -16,7 +16,7 @@ categories: []
 # - HTML
 # - JavaScript
 # - Rust
-# - Sass
+# - SCSS
 # - YAML
 languages: []
 # Tags:

@@ -7,7 +7,7 @@ categories:
 languages:
   - CSS
   - HTML
-  - Go Templates
+  - Go-Templates
   - JavaScript
   - SCSS
   - YAML
@@ -30,6 +30,10 @@ Aside from the actual mechanics of generating the build products, I wanted to do
 
 So yes, the site is barebones and minimalist, but I have good odds on understanding what is happening at any point in time and how to accomplish the changes I want to make.
 <!--more-->
+
+## Summary
+
+
 
 ## Motivation
 
@@ -83,6 +87,35 @@ Plus, the internet has a nasty habit of losing things you value.  "The internet 
 
 Time is the biggest challenge in building this.  Not time for maintenance, of course, since this approach largley dispenses with maintenance.  But rather than starting with a theme developed by someone else, I have to build this thing from scratch.  I'm intimidated by design and accessibility concerns, but I also want to do this well.  So this involves a lot of research and learning new things in areas that I don't find intrinsically motivating.  And I frankly don't know if anyone else will ever see this, so just doing _anything_ is a little extra difficult.
 
+### Design
+
+I think of myself as having fairly good taste, but I've never really exercised visual creative muscles.  I liked drawing as a kid, but didn't stick with it through adolescence.  I was disheartened by how others seemed to grow so fast (in reality, it's likely because they worked at it, practiced, read books, etc) while I progressed so slowly.
+
+So now I'm 42 and can't pick three colors to go together.  So I'll have to learn _everything_ as I go.  I'm going to look stupid many, many times, and I'll feel stupid just as often.
+
 ## Approach
 
 I guess I'm kicking it old-school here; just adding things as I think of them :shrug:.  I don't really have a grand vision of this thing other than that I'll be able to share some relatively meaningful summaries of the projects I'm working on as I start them.
+
+<!--
+
+## Postmortem
+
+After completing the project, provide a postmortem that includes a retrospective on how the project went. This should include any lessons learned, successes, and failures. 
+
+### Successes
+
+Highlight the things that went well during the project.
+
+### Failures
+
+Identify the things that didn't go as planned, and explain why.
+
+### Lessons Learned
+
+Summarize the key takeaways from the project, including what you learned and what you would do differently next time.
+
+## Conclusion
+
+Wrap up the post with a brief conclusion, summarizing the key points of the project and what you achieved. Also, provide links to the project's code repository or live demo, if available.
+-->

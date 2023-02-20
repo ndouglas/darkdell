@@ -5,6 +5,7 @@
       "aside",
       "base",
       "body",
+      "code",
       "div",
       "em",
       "footer",
@@ -28,15 +29,26 @@
       "ul"
     ],
     "classes": [
+      "a-no-color",
+      "a-nocolor",
       "inline-svg",
+      "no-color",
       "no-js"
     ],
     "ids": [
       "approach",
       "challenges",
+      "conclusion",
+      "design",
       "documenting-what-i-learn",
+      "failures",
       "joomla-wordpress-and-drupal-a-history-of-heartbreak",
+      "lessons-learned",
       "motivation",
+      "motivations",
+      "postmortem",
+      "successes",
+      "summary",
       "the-vagov-content-build-process-and-its-discontents",
       "time"
     ]

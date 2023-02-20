@@ -3,7 +3,7 @@
   <ul>
     {{ range . }}
     <li>
-      <a href="{{ .URL }}">{{ .Name | humanize }}</a>
+      <a href="{{ .URL }}" aria-label="{{ .Name | humanize }}">{{ .Name | humanize }}</a>
     </li>
     {{ end }}
   </ul>

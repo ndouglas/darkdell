@@ -19,6 +19,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+
       - name: Install Hugo
         run: sudo snap install hugo
 

@@ -16,5 +16,10 @@ main:
   pre: ''
   post: ''
   url: /projects/
-  emoji: ':hammer:'
+  weight: -1
+- identifier: 'ideas'
+  name: 'Ideas'
+  pre: ''
+  post: ''
+  url: /ideas/
   weight: -1

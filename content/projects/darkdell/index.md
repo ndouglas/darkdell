@@ -33,7 +33,19 @@ So yes, the site is barebones and minimalist, but I have good odds on understand
 
 ## Summary
 
+Darkdell is a personal portfolio website created to revisit web technologies and explore what has been missed in the ever-changing world of web development.
 
+### Naming
+
+ChatGPT analyzed my naming as follows:
+
+>"Dark" can be interpreted as a metaphor for a creative mind. Creativity often involves exploring unknown territories, tackling complex challenges, and embracing the unknown. Similarly, darkness can represent the unknown, mysterious, and unexplored. Thus, "Dark" could connote creative potential, an imaginative spirit, and a willingness to embrace new challenges.
+
+>"Dell" is often used to refer to a small, secluded valley or hollow. It could represent a place of tranquility and reflection. A personal portfolio website is a space where one can showcase their work, share their vision and express their personality. Thus, "Dell" could connote a small, secluded space that is deeply personal and reflective, like a private garden or a secluded place where one can contemplate their work and creative journey.
+
+>The association with the castle and the series could also add an interesting dimension to your personal portfolio website. The name "Darkdell" could evoke a sense of mystery, history, and grandeur, which could be an interesting theme to explore in the design and content of the website. You could use elements from the castle or the Dornish culture as inspiration for the design or showcase your work in a way that evokes the grandeur and complexity of the castle.
+
+>Overall, the name "Darkdell" could be a memorable and meaningful name for a personal portfolio website, evoking creativity, reflection, and the grandeur of a fictional world.
 
 ## Motivation
 

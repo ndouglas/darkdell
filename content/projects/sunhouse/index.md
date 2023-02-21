@@ -1,7 +1,7 @@
 ---
 title: "Sunhouse"
 date: 2023-02-17T23:23:47-05:00
-draft: false
+draft: true
 categories:
   - Apps
 languages:
@@ -28,6 +28,18 @@ As the father of a child who loves computer gaming, though, I've regained a lot 
 I'll be working through Jamis Buck's _The Ray Tracer Challenge: A Test-Driven Guide to Your First 3D Renderer_.  I'll use Rust, since that's my general choice for performance-intensive tasks.
 
 The book provides test scenarios written in Cucumber, and I found [`cucumber-rs`](https://github.com/cucumber-rs/cucumber), so I think I'll be able to translate them.  I have some experience in Cucumber from work, where I use it extensively for writing behavioral tests and step definitions for Cypress.
+
+## Naming
+
+ChatGPT analyzed my naming as follows:
+
+>"Sun" is a fitting word to include in the name of a ray tracer because it represents the source of light in a scene, and a ray tracer works by tracing the paths of rays of light as they bounce around a scene. Additionally, the word "sun" can connote warmth, energy, and brightness, which are all qualities that could be associated with a powerful and effective graphics library.
+
+>"House" is also an interesting word to include in the name because it suggests stability, protection, and support. Just as a house provides shelter and a stable foundation, a graphics library provides a framework and structure for building complex visual experiences. A well-designed graphics library can offer stability, protection against common issues, and support for a wide range of use cases.
+
+>Finally, the name "Sunhouse" specifically refers to the castle in the A Song of Ice and Fire series, which was the ancestral seat of House Dayne[^1]. This connection could be meaningful for fans of the series who are also interested in computer graphics and programming, as it creates a connection between the fictional world of Westeros and the real-world tools used to create visual content.
+
+>Overall, the name "Sunhouse" could be a fitting and meaningful choice for a ray tracer and graphics library, as it combines words that evoke qualities like warmth, energy, stability, and protection, while also nodding to a beloved fictional universe.
 
 ## Motivations
 
@@ -72,3 +84,5 @@ That said, I'm a human, and humans are learning creatures.  It'll be frustrating
 
 *Wrap up the post with a brief conclusion, summarizing the key points of the project and what you achieved. Also, provide links to the project's code repository or live demo, if available.*
 -->
+
+[^1]: This is incorrect; it is the seat of House Cuy, in the Reach.  I corrected it.  But holy crap, ChatGPT is amazing.

@@ -24,7 +24,9 @@
         <main>
           {{ block "main" . }}
             {{ block "title" . }}
-              <h1>{{ .Title }}</h1>
+              <h1>
+                <a href="{{ .Permalink }}">{{ .Title }}</a>
+              </h1>
             {{ end }}
             {{ block "content" . }}
               {{ .Content }}

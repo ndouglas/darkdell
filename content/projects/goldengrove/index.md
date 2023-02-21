@@ -14,6 +14,7 @@ docs_url: "https://ndouglas.github.io/goldengrove/docs/"
 progress: 0
 subtitle: "A library and app for procedurally generating artifacts, books, tools, cultures, names, legends, myths, religions, and more for the worlds created by Highgarden."
 ---
+<!--more-->
 
 ## Summary
 

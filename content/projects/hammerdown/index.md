@@ -37,6 +37,8 @@ subtitle: 'A fantasy roguelike game set in an abandoned mountain dwarf kingdom, 
 
 Hammerdown: Depths of the Undermountain is a fantasy roguelike game set in an abandoned mountain dwarf kingdom. As a lone adventurer, you must explore the treacherous depths of the underdark, battling fearsome creatures, avoiding deadly traps, and uncovering forgotten treasures.
 
+<!--more-->
+
 ## Summary
 
 In Hammerdown, you take on the role of a lone adventurer exploring the abandoned mountain dwarf kingdom in the underdark. The game is turn-based, with the player navigating through a series of treacherous environments filled with deadly traps and fearsome creatures. You must use a variety of weapons and spells to defeat enemies and uncover powerful artifacts left behind by the dwarves.

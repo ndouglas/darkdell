@@ -1,7 +1,7 @@
 ---
 title: "Sunhouse"
 date: 2023-02-17T23:23:47-05:00
-draft: true
+draft: false
 categories:
   - Apps
 languages:
@@ -37,7 +37,7 @@ ChatGPT analyzed my naming as follows:
 
 >"House" is also an interesting word to include in the name because it suggests stability, protection, and support. Just as a house provides shelter and a stable foundation, a graphics library provides a framework and structure for building complex visual experiences. A well-designed graphics library can offer stability, protection against common issues, and support for a wide range of use cases.
 
->Finally, the name "Sunhouse" specifically refers to the castle in the A Song of Ice and Fire series, which was the ancestral seat of House Dayne[^1]. This connection could be meaningful for fans of the series who are also interested in computer graphics and programming, as it creates a connection between the fictional world of Westeros and the real-world tools used to create visual content.
+>Finally, the name "Sunhouse" specifically refers to the castle in the _A Song of Ice and Fire_ series, which was the ancestral seat of House Dayne[^1]. This connection could be meaningful for fans of the series who are also interested in computer graphics and programming, as it creates a connection between the fictional world of Westeros and the real-world tools used to create visual content.
 
 >Overall, the name "Sunhouse" could be a fitting and meaningful choice for a ray tracer and graphics library, as it combines words that evoke qualities like warmth, energy, stability, and protection, while also nodding to a beloved fictional universe.
 

@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/ndouglas/darkdell#readme",
   "devDependencies": {
-    "@html-eslint/eslint-plugin": "^0.17.1",
+    "@html-eslint/eslint-plugin": "^0.18.0",
     "@html-eslint/parser": "^0.17.1",
     "eslint": "^8.37.0",
     "eslint-config-airbnb-base": "^15.0.0",

@@ -51,7 +51,7 @@ ChatGPT analyzed my naming as follows:
 
 ### The VA.gov Content-Build Process and Its Discontents
 
-My day job (as of February, 2023) is at [Agile Six](https://agile6.com/), working on the [VA.gov](https://www.va.gov/ "Department of Veterans Affairs") Modernization Project.  There's a lot of backstory going back several years, but the **TL;DR** is that we have a regular content build based on Node/Metalsmith/Liquid that retrieve content from a Drupal 9 backend via GraphQL and generate static HTML files that are then copied to and served from an AWS S3 bucket.
+My day job (as of June, 2023) is at [Agile Six](https://agile6.com/), working on the [VA.gov](https://www.va.gov/ "Department of Veterans Affairs") Modernization Project.  There's a lot of backstory going back several years, but the **TL;DR** is that we have a regular content build based on Node/Metalsmith/Liquid that retrieve content from a Drupal 9 backend via GraphQL and generate static HTML files that are then copied to and served from an AWS S3 bucket.
 
 Again, there's a significant amount of backstory here, and the individual choices along the path have been made with good intentions and were probably the best available paths at the time.  We've also attempted to replace the frontend component of this solution on at least two occasions that I'm aware of in the time that I've been on the project, but various factors outside our control have prevented this.
 

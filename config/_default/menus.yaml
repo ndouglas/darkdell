@@ -11,15 +11,9 @@ main:
   post: ''
   url: /about/
   weight: -2
-- identifier: 'projects'
-  name: 'Projects'
+- identifier: 'posts'
+  name: 'Posts'
   pre: ''
   post: ''
-  url: /projects/
-  weight: -1
-- identifier: 'ideas'
-  name: 'Ideas'
-  pre: ''
-  post: ''
-  url: /ideas/
+  url: /posts/
   weight: -1

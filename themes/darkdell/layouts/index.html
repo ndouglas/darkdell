@@ -1,13 +1,13 @@
 {{ define "content" }}
-  {{ .Content }}
-  <h2>
-    <a href="/projects/" class="no-color">Projects</a>
-  </h2>
-  {{ with ( where site.RegularPages ".Section" "projects" ) }}
-    {{ range first 50 . }}
-      {{ .Scratch.Set "list_item.headingOpen" "<h3>" }}
-      {{ .Scratch.Set "list_item.headingClose" "</h3>" }}  
-      {{ partial "list_item.html" . }}
-    {{ end }}
-  {{ end }}
+{{ .Content }}
+<h2>
+  <a href="/posts/" class="no-color">Posts</a>
+</h2>
+{{ with ( where site.RegularPages ".Section" "posts" ) }}
+{{ range first 50 . }}
+{{ .Scratch.Set "list_item.headingOpen" "<h3>" }}
+  {{ .Scratch.Set "list_item.headingClose" "</h3>" }}
+{{ partial "list_item.html" . }}
+{{ end }}
+{{ end }}
 {{ end }}

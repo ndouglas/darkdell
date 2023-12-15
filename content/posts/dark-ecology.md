@@ -7,8 +7,8 @@ keywords: []
 aliases: []
 tags: []
 ---
-David Wallace-Wells' _[The Uninhabitable Earth](https://en.wikipedia.org/wiki/The_Uninhabitable_Earth_(book))_ led me to Paul Kingsnorth's essay "[Dark Ecology](https://www.paulkingsnorth.net/dark-ecology)". It got me worked up enough that I decided to repurpose this site and use it as an actual blog for actual thoughts. 
-
+David Wallace-Wells' _[The Uninhabitable Earth](https://en.wikipedia.org/wiki/The_Uninhabitable_Earth_(book))_ led me to Paul Kingsnorth's essay "[Dark Ecology](https://www.paulkingsnorth.net/dark-ecology)" (as opposed to Timothy Morton's book of the same name). It got me worked up enough that I decided to repurpose this site and use it as an actual blog for actual thoughts. 
+<!--more-->
 I had been using this site only as a rarely-updated repository for unnecessary summaries of my off-the-clock projects, but God, how depressing is that? To work all day, leave the office, work more so that I can work for more money somewhere else, and then blog about it... Christ.
 
 Anyway.

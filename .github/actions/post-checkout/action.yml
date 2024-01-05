@@ -25,9 +25,11 @@ runs:
         libdbus-1-dev \
         libudev-dev \
         ;
+    shell: bash
 
   - name: Toolchain info
     run: |
       cargo --version --verbose;
       rustc --version;
       cargo clippy --version;
+    shell: bash

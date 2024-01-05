@@ -1,4 +1,5 @@
 use anyhow::Error as AnyError;
+use maud::html;
 use std::fs::write;
 
 use crate::settings::Settings;
@@ -22,12 +23,17 @@ impl Generator {
     println!("Generating site...");
     println!("Settings: {:#?}", self.settings);
     // For right now, we'll just write a "Hello world" file to the output path.
+    let markup = html! {
+      head {
+        title { "Darkdell" }
+      }
+      p { "Hello world!"
+        br;
+       "I'm apparently dumb enough to write my own SSG, so... watch this space. And don't expect much." }
+    };
     let mut path = self.settings.get_absolute_output_path();
     path.push("index.html");
-    write(
-      path,
-      "Hello world!<br>I'm apparently dumb enough to write my own SSG, so... watch this space. And don't expect much.",
-    )?;
+    write(path, markup.into_string())?;
     Ok(())
   }
 }

@@ -1,5 +1,10 @@
 pub mod settings;
 
+pub mod prelude {
+  pub use crate::settings::loader::Loader as SettingsLoader;
+  pub use crate::settings::Settings;
+}
+
 #[cfg(test)]
 pub mod test {
 

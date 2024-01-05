@@ -64,7 +64,7 @@ pub mod test {
     let settings = Loader::load();
 
     // Print the settings.
-    println!("{:?}", settings);
+    println!("{:#?}", settings);
 
     // To preview the panic, uncomment the following line.
     // panic!();

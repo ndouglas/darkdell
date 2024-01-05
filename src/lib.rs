@@ -1,6 +1,8 @@
+pub mod generator;
 pub mod settings;
 
 pub mod prelude {
+  pub use crate::generator::Generator;
   pub use crate::settings::loader::Loader as SettingsLoader;
   pub use crate::settings::Settings;
 }

@@ -1,0 +1,35 @@
+name: "Post-Checkout"
+description: "Performs common operations after checking out the Darkdell codebase."
+inputs: {}
+runs:
+  using: "composite"
+  steps:
+
+  - name: Update local toolchain
+    uses: dtolnay/rust-toolchain@stable
+    with:
+      toolchain: stable
+      components: clippy,rustfmt
+      
+  - name: Rust cache
+    uses: Swatinem/rust-cache@v2
+
+  - name: Install dependencies
+    run: |
+      sudo apt-get update;
+      sudo apt-get install -y \
+        libasound2-dev \
+        portaudio19-dev \
+        build-essential \
+        libpulse-dev \
+        libdbus-1-dev \
+        libudev-dev \
+        ;
+    shell: bash
+
+  - name: Toolchain info
+    run: |
+      cargo --version --verbose;
+      rustc --version;
+      cargo clippy --version;
+    shell: bash

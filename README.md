@@ -1,5 +1,5 @@
 # Darkdell
 
-My blog/portfolio/site, I guess, managed with Hugo and a custom-built (and _very_ barebones) theme.
+This is my website, which I'm creating with a wholly custom static site generator – whose source lives in this repository as well.
 
-Darkdell is a personal portfolio website created to revisit web technologies and explore what has been missed in the ever-changing world of web development.
+So yeah, it's _minimal_... because I'm doing everything from scratch 🙂

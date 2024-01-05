@@ -27,9 +27,11 @@ impl Generator {
       head {
         title { "Darkdell" }
       }
-      p { "Hello world!"
+      p { 
+        "Hello world!"
         br;
-       "I'm apparently dumb enough to write my own SSG, so... watch this space. And don't expect much." }
+        "I'm apparently dumb enough to write my own SSG, so... watch this space. And don't expect much."
+      }
     };
     let mut path = self.settings.get_absolute_output_path();
     path.push("index.html");

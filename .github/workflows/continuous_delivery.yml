@@ -1,0 +1,22 @@
+name: Continuous Integration
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  continuous-delivery:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Post-Checkout Actions
+        uses: ./.github/actions/post-checkout
+
+      - name: Build
+        run: cargo build
+
+      - name: Release Content
+        run: ./target/debug/darkdell

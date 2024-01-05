@@ -1,0 +1,33 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  continuous-deployment:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Post-Checkout Actions
+        uses: ./.github/actions/post-checkout
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Release Content
+        run: ./target/release/darkdell
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Copy Files to S3
+        run: aws s3 sync ./output s3://${{ secrets.AWS_S3_BUCKET }}/ --delete
+          

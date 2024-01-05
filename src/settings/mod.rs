@@ -8,12 +8,11 @@ use std::path::PathBuf;
 /// It will be serialized/deserialized in YAML.
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Settings {
-  #[serde(default)]
-  output_dir: Option<String>,
+  #[serde(default = "Settings::get_default_output_dir")]
+  pub output_dir: Option<String>,
 }
 
 impl Settings {
-
   /// Get the settings path.
   pub fn get_settings_path() -> PathBuf {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -21,15 +20,10 @@ impl Settings {
     path
   }
 
-  /// Create a new settings file with the default settings.
-  pub fn create_default() {
+  /// Create a new, empty settings file.
+  pub fn create_empty() {
     let path = Settings::get_settings_path();
-    let mut file = File::create(&path).expect("Failed to create settings file.");
-    let settings = Settings::default();
-    let settings_string = serde_yaml::to_string(&settings).expect("Failed to serialize settings.");
-    file
-      .write_all(settings_string.as_bytes())
-      .expect("Failed to write settings to file.");
+    File::create(&path).expect("Failed to create settings file.");
     println!("Created settings file at {:?}", path);
   }
 
@@ -49,13 +43,18 @@ impl Settings {
   pub fn load() -> Result<Settings, AnyError> {
     let path = Settings::get_settings_path();
 
-    // If the settings file doesn't exist, create it and write the default settings to it.
+    // If the settings file doesn't exist, create it as an empty file.
     if !path.exists() {
-      Settings::create_default();
+      Settings::create_empty();
     }
 
     // Read the settings file.
     Settings::read(&path)
+  }
+
+  /// Get the default output directory.
+  pub fn get_default_output_dir() -> Option<String> {
+    Some("output".to_string())
   }
 }
 

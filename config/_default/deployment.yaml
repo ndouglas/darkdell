@@ -1,4 +1,0 @@
-targets:
-  - name: 's3'
-    URL: 's3://darkdell.www?region=us-east-1'
-    cloudFrontDistributionID: 'ERL3QRNQL3Q5K'

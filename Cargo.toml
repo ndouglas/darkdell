@@ -1,0 +1,22 @@
+[package]
+name = "darkdell"
+version = "0.1.0"
+edition = "2021"
+authors = ["Nathan Douglas <github@darkdell.net>"]
+license = "Unlicense"
+homepage = "https://darkdell.net/"
+repository = "https://github.com/ndouglas/darkdell/"
+documentation = "https://ndouglas.github.io/darkdell/"
+readme = "README.md"
+keywords = ["darkdell"]
+default-run = "darkdell"
+
+[lib]
+name = "darkdell"
+path = "src/lib.rs"
+
+[[bin]]
+name = "darkdell"
+path = "src/main.rs"
+
+[dependencies]

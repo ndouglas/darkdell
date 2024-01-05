@@ -1,8 +1,0 @@
-{{ define "content" }}
-  {{ .Content }}
-  {{ range first 10 .RegularPages }}
-    {{ .Scratch.Set "list_item.headingOpen" "<h2>" }}
-    {{ .Scratch.Set "list_item.headingClose" "</h2>" }}
-    {{ partial "list_item.html" . }}
-  {{ end }}
-{{ end }}

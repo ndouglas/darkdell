@@ -20,3 +20,11 @@ name = "darkdell"
 path = "src/main.rs"
 
 [dependencies]
+anyhow = { version = "1.0.79", features = ["backtrace"] }
+derivative = "2.2.0"
+derive_more = "0.99.17"
+log = "0.4.20"
+pretty_env_logger = "0.5.0"
+serde = { version = "1.0.194", features = ["derive"] }
+serde_yaml = "0.9.30"
+thiserror = "1.0.56"

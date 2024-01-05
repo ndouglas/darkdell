@@ -8,8 +8,8 @@ use std::path::PathBuf;
 /// It will be serialized/deserialized in YAML.
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Settings {
-  #[serde(default = "Settings::get_default_output_dir")]
-  pub output_dir: Option<String>,
+  #[serde(default = "Settings::get_default_output_path")]
+  pub output_path: Option<String>,
 }
 
 impl Settings {
@@ -52,8 +52,8 @@ impl Settings {
     Settings::read(&path)
   }
 
-  /// Get the default output directory.
-  pub fn get_default_output_dir() -> Option<String> {
+  /// Get the default output path.
+  pub fn get_default_output_path() -> Option<String> {
     Some("output".to_string())
   }
 }

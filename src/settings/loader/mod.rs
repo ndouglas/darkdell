@@ -65,5 +65,8 @@ pub mod test {
 
     // Print the settings.
     println!("{:?}", settings);
+
+    // To preview the panic, uncomment the following line.
+    // panic!();
   }
 }

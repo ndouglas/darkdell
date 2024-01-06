@@ -8,7 +8,7 @@ type: 'index'
 Hello world!
 I'm apparently dumb enough to write my own [SSG](https://github.com/ndouglas/darkdell/), so... watch this space. And don't expect much. :slightly_smiling_face:
 
-(I don't have code in place to do this automatically yet. Forgive me.)
+(I don't yet have code in place to do generate listings automatically. Forgive me.)
 
 # Special Pages
 - [About Me](./about.html)

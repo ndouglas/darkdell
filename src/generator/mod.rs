@@ -22,12 +22,12 @@ impl Generator {
   /// Calculate the paths to the content files that need to be generated.
   #[allow(clippy::only_used_in_recursion)]
   pub fn calculate_content_files(&self, content_path: &Path) -> Result<Vec<PathBuf>, AnyError> {
-    debug!("Calculating content files...");
+    debug!("Calculating content files at {:?}", content_path);
     let mut content_files = Vec::new();
     for entry in content_path.read_dir()? {
       let entry = entry?;
       let path = entry.path();
-      trace!("Path: {:?}", path);
+      trace!("Found content file at path: {:?}", path);
       if path.is_dir() {
         let mut sub_content_files = self.calculate_content_files(&path)?;
         content_files.append(&mut sub_content_files);
@@ -48,7 +48,7 @@ impl Generator {
     debug!("Content files: {:#?}", content_files);
     let processor = Processor::new(self.settings.clone());
     for content_file in content_files {
-      trace!("Content file: {:?}", content_file);
+      trace!("Processing content file: {:?}", content_file);
       processor.process(&content_file)?;
     }
     Ok(())

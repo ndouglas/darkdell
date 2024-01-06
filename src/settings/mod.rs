@@ -5,7 +5,7 @@ pub mod loader;
 
 /// The `Settings` struct will hold all of our settings.
 /// It will be serialized/deserialized in YAML.
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Clone, Serialize, Deserialize, Debug, Default)]
 pub struct Settings {
   #[serde(default = "Settings::get_default_output_path")]
   pub output_path: Option<String>,
@@ -15,6 +15,8 @@ pub struct Settings {
   pub template_path: Option<String>,
   #[serde(default = "Settings::get_default_base_path")]
   pub base_path: Option<String>,
+  #[serde(default = "Settings::get_default_excerpt_delimiter")]
+  pub excerpt_delimiter: Option<String>,
 }
 
 impl Settings {
@@ -37,6 +39,11 @@ impl Settings {
   pub fn get_default_base_path() -> Option<String> {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     Some(path.to_str().unwrap().to_string())
+  }
+
+  /// Get the default excerpt delimiter.
+  pub fn get_default_excerpt_delimiter() -> Option<String> {
+    Some("<!-- more -->".to_string())
   }
 
   /// Get the absolute output path.

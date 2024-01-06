@@ -46,11 +46,10 @@ impl Generator {
     trace!("Content path: {:?}", content_path);
     let content_files = self.calculate_content_files(&content_path)?;
     debug!("Content files: {:#?}", content_files);
-    // For each file, we will instantiate a new Processor and process the file.
+    let processor = Processor::new(self.settings.clone());
     for content_file in content_files {
       trace!("Content file: {:?}", content_file);
-      let processor = Processor::new(self.settings.clone(), content_file);
-      processor.process()?;
+      processor.process(&content_file)?;
     }
     Ok(())
   }

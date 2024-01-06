@@ -17,6 +17,10 @@ pub struct Settings {
   pub base_path: Option<String>,
   #[serde(default = "Settings::get_default_excerpt_delimiter")]
   pub excerpt_delimiter: Option<String>,
+  #[serde(default = "Settings::get_default_author")]
+  pub author: Option<String>,
+  #[serde(default = "Settings::get_default_description")]
+  pub description: Option<String>,
 }
 
 impl Settings {
@@ -44,6 +48,16 @@ impl Settings {
   /// Get the default excerpt delimiter.
   pub fn get_default_excerpt_delimiter() -> Option<String> {
     Some("<!-- more -->".to_string())
+  }
+
+  /// Get the default author.
+  pub fn get_default_author() -> Option<String> {
+    Some("Anonymous Coward".to_string())
+  }
+
+  /// Get the default description.
+  pub fn get_default_description() -> Option<String> {
+    Some("A Darkdell site.".to_string())
   }
 
   /// Get the absolute output path.

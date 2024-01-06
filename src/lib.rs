@@ -1,12 +1,16 @@
 pub mod front_matter;
 pub mod generator;
+pub mod parser;
 pub mod processor;
+pub mod renderer;
 pub mod settings;
 
 pub mod prelude {
   pub use crate::front_matter::FrontMatter;
   pub use crate::generator::Generator;
+  pub use crate::parser::Parser;
   pub use crate::processor::Processor;
+  pub use crate::renderer::Renderer;
   pub use crate::settings::loader::Loader as SettingsLoader;
   pub use crate::settings::Settings;
 }

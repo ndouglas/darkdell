@@ -5,9 +5,11 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 pub struct FrontMatter {
   #[serde(default)]
-  pub title: String,
+  pub title: Option<String>,
   #[serde(default)]
-  pub date: String,
+  pub author: Option<String>,
+  #[serde(default)]
+  pub date: Option<String>,
   #[serde(default)]
   pub draft: bool,
   #[serde(default = "FrontMatter::get_default_type")]
@@ -15,7 +17,7 @@ pub struct FrontMatter {
   #[serde(default = "Vec::new")]
   pub tags: Vec<String>,
   #[serde(default)]
-  pub description: String,
+  pub description: Option<String>,
 }
 
 impl FrontMatter {

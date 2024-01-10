@@ -53,29 +53,10 @@ impl Renderer {
 
   /// Render the HTML.
   pub fn render_html(&self, front_matter: &FrontMatter, content: &str) -> Markup {
-    let description = front_matter
-      .description
-      .clone()
-      .unwrap_or(self.settings.description.clone().unwrap());
-    let author = front_matter
-      .author
-      .clone()
-      .unwrap_or(self.settings.author.clone().unwrap());
-    let title = front_matter.title.clone().unwrap_or("Untitled".to_string());
     html! {
       (DOCTYPE)
       html lang="en" {
-        head {
-          meta charset="utf-8";
-          meta name="viewport" content="width=device-width, initial-scale=1";
-          meta name="description" content=(description);
-          meta name="author" content=(author);
-          meta name="generator" content="Darkdell";
-          title {
-            (title)
-          }
-          link rel="stylesheet" href="/css/style.css";
-        }
+        (self.render_header(front_matter))
         body {
           @match front_matter.r#type.as_str() {
             "index" => {
@@ -106,7 +87,41 @@ impl Renderer {
               }
             },
           }
+          (self.render_footer(front_matter))
         }
+      }
+    }
+  }
+
+  /// Render the header.
+  pub fn render_header(&self, front_matter: &FrontMatter) -> Markup {
+    let title = front_matter.title.clone().unwrap_or("Untitled".to_string());
+    let author = front_matter
+      .author
+      .clone()
+      .unwrap_or(self.settings.author.clone().unwrap());
+    let description = front_matter
+      .description
+      .clone()
+      .unwrap_or(self.settings.description.clone().unwrap());
+    html! {
+      head {
+        meta charset="utf-8";
+        meta name="viewport" content="width=device-width, initial-scale=1";
+        meta name="description" content=(description);
+        meta name="author" content=(author);
+        meta name="generator" content="Darkdell";
+        title {
+          (title)
+        }
+      }
+    }
+  }
+
+  /// Render the footer.
+  pub fn render_footer(&self, _front_matter: &FrontMatter) -> Markup {
+    html! {
+      footer class="footer" {
       }
     }
   }

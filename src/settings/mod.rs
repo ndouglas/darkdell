@@ -57,7 +57,7 @@ impl Settings {
 
   /// Get the default description.
   pub fn get_default_description() -> Option<String> {
-    Some("A Darkdell site.".to_string())
+    Some("Just a schmuck rattling into the void.".to_string())
   }
 
   /// Get the absolute output path.

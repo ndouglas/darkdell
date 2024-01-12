@@ -25,6 +25,7 @@ comrak = { version = "0.20.0", features = ["shortcodes"] }
 derivative = "2.2.0"
 derive_more = "0.99.17"
 gray_matter = "0.2.6"
+iso8601 = "0.6.1"
 log = "0.4.20"
 maud = "0.25.0"
 pretty_env_logger = "0.5.0"

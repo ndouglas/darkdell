@@ -6,6 +6,7 @@ pub mod parser;
 pub mod processor;
 pub mod renderer;
 pub mod settings;
+pub mod site;
 
 pub mod prelude {
   pub use crate::content::Content;
@@ -17,6 +18,7 @@ pub mod prelude {
   pub use crate::renderer::Renderer;
   pub use crate::settings::loader::Loader as SettingsLoader;
   pub use crate::settings::Settings;
+  pub use crate::site::Site;
 }
 
 #[cfg(test)]

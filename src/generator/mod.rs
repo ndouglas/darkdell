@@ -4,8 +4,8 @@ use std::fs::{create_dir_all, remove_dir_all};
 use std::path::{Path, PathBuf};
 
 use crate::parser::Parser;
-use crate::processor::Processor;
 use crate::settings::Settings;
+use crate::site::Site;
 
 /// The generator handles the actual generation of the site.
 /// It will use the settings to determine where to look for content, where to
@@ -66,14 +66,11 @@ impl Generator {
     trace!("Content path: {:?}", content_path);
     let content_files = self.calculate_content_files(&content_path)?;
     debug!("Content files: {:#?}", content_files);
-    let contents = self.parser.parse_all(&content_files)?;
-    debug!("Contents: {:#?}", contents);
+    let content = self.parser.parse_all(&content_files)?;
+    debug!("Content: {:#?}", content);
     self.clean_output_directory()?;
-    let processor = Processor::new(self.settings.clone());
-    for content in contents {
-      trace!("Processing content: {:?}", content);
-      processor.process(&content)?;
-    }
+    let site = Site::new(content, self.settings.clone());
+    site.build()?;
     Ok(())
   }
 }

@@ -50,7 +50,10 @@ impl Generator {
     trace!("Cleaning output directory...");
     let output_path = self.settings.get_absolute_output_path();
     trace!("Output path: {:?}", output_path);
-    remove_dir_all(&output_path)?;
+    if output_path.exists() {
+      debug!("Removing output directory...");
+      remove_dir_all(&output_path)?;
+    }
     create_dir_all(&output_path)?;
     Ok(())
   }

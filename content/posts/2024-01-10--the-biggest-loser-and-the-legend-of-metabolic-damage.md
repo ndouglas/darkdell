@@ -4,7 +4,7 @@ date: 2024-01-10T13:22:00-05:00
 draft: false
 type: 'post'
 ---
-This essay 
+This essay _might_ be the first in a series about the human tendency to outsource responsibility for research and critical thought.
 <!-- more -->
 
 ## The _Biggest Loser_ and CICO

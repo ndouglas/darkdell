@@ -15,6 +15,7 @@ I'm apparently dumb enough to write my own [SSG](https://github.com/ndouglas/dar
 
 # Posts
 
+- [_The Biggest Loser_ and the Legend of Metabolic Damage](./posts/2024-01-10--the-biggest-loser-and-the-legend-of-metabolic-damage.html)
 - [Job-Seeking and Its Discontents](./posts/2024-01-09--job-seeking-and-its-discontents.html)
 - [Have You Seen Me Lately?](./posts/2024-01-03--have-you-seen-me-lately.html)
 - [What is Valuable?](./posts/2023-12-15--what-is-valuable.html)

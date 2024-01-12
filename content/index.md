@@ -4,10 +4,9 @@ date: 2023-02-18T00:06:13-05:00
 draft: false
 type: 'index'
 ---
-Hello world!
-
 # Special Pages
 - [About Me](./about.html)
+- [Blogroll](./blogroll.html)
 
 # Posts
 

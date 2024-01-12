@@ -1,10 +1,9 @@
 use anyhow::Error as AnyError;
 use comrak::{markdown_to_html, Options};
-use gray_matter::engine::YAML;
-use gray_matter::Matter;
 use log::trace;
 use maud::{html, Markup, PreEscaped, DOCTYPE};
 
+use crate::content::Content;
 use crate::front_matter::FrontMatter;
 use crate::settings::Settings;
 
@@ -34,36 +33,21 @@ impl Renderer {
     Self { settings, options }
   }
 
-  /// Get only the front matter for a content file.
-  pub fn get_front_matter(&self, content_file: &str) -> Result<FrontMatter, AnyError> {
-    let mut matter = Matter::<YAML>::new();
-    matter.excerpt_delimiter = self.settings.excerpt_delimiter.clone();
-    let parsed_content = matter.parse(content_file);
-    trace!("Parsed content: {:#?}", parsed_content);
-    let front_matter: FrontMatter = parsed_content.data.unwrap().deserialize().unwrap();
-    Ok(front_matter)
-  }
-
   /// Render some markdown.
-  pub fn render(&self, front_matter: &FrontMatter, content: &str) -> Result<String, AnyError> {
-    let content_html = markdown_to_html(content, &self.options);
-    let rendered_html = self.render_html(front_matter, &content_html).into_string();
-    Ok(rendered_html)
-  }
-
-  /// Render the HTML.
-  pub fn render_html(&self, front_matter: &FrontMatter, content: &str) -> Markup {
-    html! {
+  pub fn render(&self, content: &Content) -> Result<String, AnyError> {
+    trace!("Rendering content: {:#?}", content);
+    let content_html = markdown_to_html(&content.content, &self.options);
+    let rendered_html = html! {
       (DOCTYPE)
       html lang="en" {
-        (self.render_header(front_matter))
+        (self.render_header(&content.front_matter))
         body {
-          @match front_matter.r#type.as_str() {
+          @match content.front_matter.r#type.as_str() {
             "index" => {
               div class="container" {
                 div class="row" {
                   div class="col-md-12" {
-                    (PreEscaped(content))
+                    (PreEscaped(content_html))
                   }
                 }
               }
@@ -72,7 +56,7 @@ impl Renderer {
               div class="container" {
                 div class="row" {
                   div class="col-md-12" {
-                    (PreEscaped(content))
+                    (PreEscaped(content_html))
                   }
                 }
               }
@@ -81,16 +65,17 @@ impl Renderer {
               div class="container" {
                 div class="row" {
                   div class="col-md-12" {
-                    (PreEscaped(content))
+                    (PreEscaped(content_html))
                   }
                 }
               }
             },
           }
-          (self.render_footer(front_matter))
+          (self.render_footer(&content.front_matter))
         }
       }
-    }
+    };
+    Ok(rendered_html.into_string())
   }
 
   /// Render the header.

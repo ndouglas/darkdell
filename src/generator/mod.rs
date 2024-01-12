@@ -1,7 +1,9 @@
 use anyhow::Error as AnyError;
 use log::{debug, trace};
+use std::fs::{create_dir_all, remove_dir_all};
 use std::path::{Path, PathBuf};
 
+use crate::parser::Parser;
 use crate::processor::Processor;
 use crate::settings::Settings;
 
@@ -11,12 +13,17 @@ use crate::settings::Settings;
 pub struct Generator {
   /// The settings.
   settings: Settings,
+  /// The parser.
+  parser: Parser,
 }
 
 impl Generator {
   /// Create a new generator.
   pub fn new(settings: Settings) -> Self {
-    Self { settings }
+    Self {
+      settings: settings.clone(),
+      parser: Parser::new(settings.clone()),
+    }
   }
 
   /// Calculate the paths to the content files that need to be generated.
@@ -38,6 +45,16 @@ impl Generator {
     Ok(content_files)
   }
 
+  /// Clean the output directory.
+  pub fn clean_output_directory(&self) -> Result<(), AnyError> {
+    trace!("Cleaning output directory...");
+    let output_path = self.settings.get_absolute_output_path();
+    trace!("Output path: {:?}", output_path);
+    remove_dir_all(&output_path)?;
+    create_dir_all(&output_path)?;
+    Ok(())
+  }
+
   /// Generate the site.
   pub fn generate(&self) -> Result<(), AnyError> {
     trace!("Generating site...");
@@ -46,10 +63,13 @@ impl Generator {
     trace!("Content path: {:?}", content_path);
     let content_files = self.calculate_content_files(&content_path)?;
     debug!("Content files: {:#?}", content_files);
+    let contents = self.parser.parse_all(&content_files)?;
+    debug!("Contents: {:#?}", contents);
+    self.clean_output_directory()?;
     let processor = Processor::new(self.settings.clone());
-    for content_file in content_files {
-      trace!("Processing content file: {:?}", content_file);
-      processor.process(&content_file)?;
+    for content in contents {
+      trace!("Processing content: {:?}", content);
+      processor.process(&content)?;
     }
     Ok(())
   }

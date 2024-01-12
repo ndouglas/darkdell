@@ -1,3 +1,5 @@
+pub mod content;
+pub mod content_type;
 pub mod front_matter;
 pub mod generator;
 pub mod parser;
@@ -6,6 +8,8 @@ pub mod renderer;
 pub mod settings;
 
 pub mod prelude {
+  pub use crate::content::Content;
+  pub use crate::content_type::{About, Index, Post};
   pub use crate::front_matter::FrontMatter;
   pub use crate::generator::Generator;
   pub use crate::parser::Parser;

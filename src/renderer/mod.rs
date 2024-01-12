@@ -1,10 +1,9 @@
 use anyhow::Error as AnyError;
-use comrak::{markdown_to_html, Options};
+use comrak::Options;
 use log::trace;
 use maud::{html, Markup, PreEscaped, DOCTYPE};
 
 use crate::content::Content;
-use crate::front_matter::FrontMatter;
 use crate::settings::Settings;
 
 /// The `Renderer` struct is responsible for rendering the HTML.
@@ -36,42 +35,13 @@ impl Renderer {
   /// Render some markdown.
   pub fn render(&self, content: &Content) -> Result<String, AnyError> {
     trace!("Rendering content: {:#?}", content);
-    let content_html = markdown_to_html(&content.content, &self.options);
     let rendered_html = html! {
       (DOCTYPE)
       html lang="en" {
-        (self.render_header(&content.front_matter))
+        (self.render_header(content)?)
         body {
-          @match content.front_matter.r#type.as_str() {
-            "index" => {
-              div class="container" {
-                div class="row" {
-                  div class="col-md-12" {
-                    (PreEscaped(content_html))
-                  }
-                }
-              }
-            },
-            "post" => {
-              div class="container" {
-                div class="row" {
-                  div class="col-md-12" {
-                    (PreEscaped(content_html))
-                  }
-                }
-              }
-            },
-            _ => {
-              div class="container" {
-                div class="row" {
-                  div class="col-md-12" {
-                    (PreEscaped(content_html))
-                  }
-                }
-              }
-            },
-          }
-          (self.render_footer(&content.front_matter))
+          (self.render_body(content)?)
+          (self.render_footer(content)?)
         }
       }
     };
@@ -79,17 +49,23 @@ impl Renderer {
   }
 
   /// Render the header.
-  pub fn render_header(&self, front_matter: &FrontMatter) -> Markup {
-    let title = front_matter.title.clone().unwrap_or("Untitled".to_string());
-    let author = front_matter
+  pub fn render_header(&self, content: &Content) -> Result<Markup, AnyError> {
+    let title = format!(
+      "{} | {}",
+      "Darkdell",
+      content.front_matter.title.clone().unwrap_or("Untitled".to_string())
+    );
+    let author = content
+      .front_matter
       .author
       .clone()
       .unwrap_or(self.settings.author.clone().unwrap());
-    let description = front_matter
+    let description = content
+      .front_matter
       .description
       .clone()
       .unwrap_or(self.settings.description.clone().unwrap());
-    html! {
+    let result = html! {
       head {
         meta charset="utf-8";
         meta name="viewport" content="width=device-width, initial-scale=1";
@@ -100,14 +76,40 @@ impl Renderer {
           (title)
         }
       }
-    }
+    };
+    Ok(result)
+  }
+
+  /// Render the body.
+  pub fn render_body(&self, content: &Content) -> Result<Markup, AnyError> {
+    content.render_body(&self.settings, &self.options)
   }
 
   /// Render the footer.
-  pub fn render_footer(&self, _front_matter: &FrontMatter) -> Markup {
-    html! {
+  pub fn render_footer(&self, _content: &Content) -> Result<Markup, AnyError> {
+    let result = html! {
       footer class="footer" {
+        ul style="list-style-type: none; margin: 0; padding: 0;" {
+          li style="display: inline;" {
+            a href="/" {
+              "Darkdell"
+            }
+            (PreEscaped("&nbsp;&bull;&nbsp;"))
+            a href="/about.html" {
+              "About"
+            }
+            (PreEscaped("&nbsp;&bull;&nbsp;"))
+            a href="/blogroll.html" {
+              "Blogroll"
+            }
+            (PreEscaped("&nbsp;&bull;&nbsp;"))
+            a href="https://github.com/ndouglas" {
+              "GitHub"
+            }
+          }
+        }
       }
-    }
+    };
+    Ok(result)
   }
 }

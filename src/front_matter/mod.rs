@@ -1,10 +1,8 @@
-use anyhow::anyhow;
 use anyhow::Error as AnyError;
 use serde::Deserialize;
-use std::path::{Path, PathBuf};
+use std::str::FromStr;
 
-use crate::content_type::{About, ContentType, Index, Post};
-use crate::settings::Settings;
+use crate::content_type::ContentType;
 
 /// The `FrontMatter` struct will hold all of our front matter.
 /// It will be deserialized in YAML.
@@ -33,12 +31,7 @@ impl FrontMatter {
   }
 
   /// Get the output path for this content.
-  pub fn get_output_path(&self, settings: &Settings, content_file_path: &Path) -> Result<PathBuf, AnyError> {
-    match self.r#type.as_str() {
-      "about" => About {}.get_output_path(settings, content_file_path),
-      "index" => Index {}.get_output_path(settings, content_file_path),
-      "post" => Post {}.get_output_path(settings, content_file_path),
-      _ => Err(anyhow!("Unknown content type: {}", self.r#type)),
-    }
+  pub fn get_content_type(&self) -> Result<ContentType, AnyError> {
+    ContentType::from_str(&self.r#type)
   }
 }

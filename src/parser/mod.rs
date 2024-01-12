@@ -44,7 +44,7 @@ impl Parser {
       content_path: content_path.to_path_buf(),
       front_matter,
       excerpt,
-      content,
+      raw_content: content.to_string(),
     };
     Ok(result)
   }

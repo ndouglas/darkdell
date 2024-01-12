@@ -6,10 +6,10 @@ use std::path::{Path, PathBuf};
 use crate::content::Content;
 use crate::settings::Settings;
 
-/// About page.
-pub struct About {}
+/// Blogroll page.
+pub struct Blogroll {}
 
-impl About {
+impl Blogroll {
   /// Get the output path for this content type given the path to the content.
   pub fn get_output_path(&self, settings: &Settings, content_file_path: &Path) -> Result<PathBuf, AnyError> {
     let content_path = settings.get_absolute_content_path();

@@ -103,6 +103,10 @@ impl Renderer {
               "Blogroll"
             }
             (PreEscaped("&nbsp;&bull;&nbsp;"))
+            a href="https://pnk.darkdell.net/" {
+              "Pinkmaiden"
+            }
+            (PreEscaped("&nbsp;&bull;&nbsp;"))
             a href="https://github.com/ndouglas" {
               "GitHub"
             }

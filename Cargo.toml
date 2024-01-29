@@ -21,7 +21,7 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = { version = "1.0.79", features = ["backtrace"] }
-comrak = { version = "0.20.0", features = ["shortcodes"] }
+comrak = { version = "0.21.0", features = ["shortcodes"] }
 derivative = "2.2.0"
 derive_more = "0.99.17"
 gray_matter = "0.2.6"

@@ -11,6 +11,7 @@ type: 'index'
 
 # Posts
 
+- [Outsourcing Critical Thought](./posts/2024-02-03--outsourcing-critical-thought/)
 - [_The Biggest Loser_ and the Legend of Metabolic Damage](./posts/2024-01-10--the-biggest-loser-and-the-legend-of-metabolic-damage/)
 - [Job-Seeking and Its Discontents](./posts/2024-01-09--job-seeking-and-its-discontents/)
 - [Have You Seen Me Lately?](./posts/2024-01-03--have-you-seen-me-lately/)

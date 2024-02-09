@@ -1,1 +1,13 @@
 author: "Nathan Douglas"
+footer:
+  links:
+    - href: "/"
+      title: "Darkdell"
+    - href: "/about/"
+      title: "About"
+    - href: "/blogroll/"
+      title: "Blogroll"
+    - href: "https://pnk.darkdell.net/"
+      title: "Pinkmaiden"
+    - href: "https://github.com/ndouglas"
+      title: "GitHub"

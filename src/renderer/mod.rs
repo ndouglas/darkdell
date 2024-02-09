@@ -1,7 +1,7 @@
 use anyhow::Error as AnyError;
 use comrak::Options;
 use log::trace;
-use maud::{html, Markup, PreEscaped, DOCTYPE};
+use maud::{html, Markup, DOCTYPE};
 
 use crate::content::Content;
 use crate::settings::Settings;
@@ -87,31 +87,10 @@ impl Renderer {
 
   /// Render the footer.
   pub fn render_footer(&self, _content: &Content) -> Result<Markup, AnyError> {
+    let footer_settings = self.settings.footer.clone().unwrap_or_default();
     let result = html! {
       footer class="footer" {
-        ul style="list-style-type: none; margin: 0; padding: 0;" {
-          li style="display: inline;" {
-            a href="/" {
-              "Darkdell"
-            }
-            (PreEscaped("&nbsp;&bull;&nbsp;"))
-            a href="/about.html" {
-              "About"
-            }
-            (PreEscaped("&nbsp;&bull;&nbsp;"))
-            a href="/blogroll.html" {
-              "Blogroll"
-            }
-            (PreEscaped("&nbsp;&bull;&nbsp;"))
-            a href="https://pnk.darkdell.net/" {
-              "Pinkmaiden"
-            }
-            (PreEscaped("&nbsp;&bull;&nbsp;"))
-            a href="https://github.com/ndouglas" {
-              "GitHub"
-            }
-          }
-        }
+        (footer_settings.get_link_list()?)
       }
     };
     Ok(result)

@@ -6,8 +6,8 @@ type: 'index'
 ---
 # Special Pages
 
-- [About Me](./about.html)
-- [Blogroll](./blogroll.html)
+- [About Me](./about/)
+- [Blogroll](./blogroll/)
 
 # Posts
 

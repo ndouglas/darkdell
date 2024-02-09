@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
+pub mod footer;
+use footer::FooterSettings;
 pub mod loader;
 
 /// The `Settings` struct will hold all of our settings.
@@ -21,6 +23,8 @@ pub struct Settings {
   pub author: Option<String>,
   #[serde(default = "Settings::get_default_description")]
   pub description: Option<String>,
+  #[serde(default = "Settings::get_default_footer_settings")]
+  pub footer: Option<FooterSettings>,
 }
 
 impl Settings {
@@ -79,6 +83,11 @@ impl Settings {
     let mut path = PathBuf::from(self.base_path.as_ref().unwrap());
     path.push(self.template_path.as_ref().unwrap());
     path
+  }
+
+  /// Get the default footer settings.
+  pub fn get_default_footer_settings() -> Option<FooterSettings> {
+    Some(FooterSettings::default())
   }
 }
 

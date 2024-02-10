@@ -40,6 +40,8 @@ impl Processor {
     // rendered content file to the output directory.
     trace!("Content: {:#?}", content);
     let file_name = content.get_output_path(&self.settings)?;
+    trace!("Copying assets for: {:?}", file_name);
+    content.copy_assets(&self.settings)?;
     trace!("File name: {:?}", file_name);
     let rendered_page = self.renderer.render(content)?;
     trace!("Rendered page: {:#?}", rendered_page);

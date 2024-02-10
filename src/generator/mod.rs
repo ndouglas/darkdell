@@ -38,8 +38,12 @@ impl Generator {
       if path.is_dir() {
         let mut sub_content_files = self.calculate_content_files(&path)?;
         content_files.append(&mut sub_content_files);
-      } else {
-        content_files.push(path);
+      } else if path.is_file() {
+        if let Some(extension) = path.extension() {
+          if extension == "md" {
+            content_files.push(path);
+          }
+        }
       }
     }
     Ok(content_files)

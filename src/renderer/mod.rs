@@ -28,7 +28,7 @@ impl Renderer {
     options.extension.header_ids = Some("section-".to_string());
     options.extension.shortcodes = true;
     options.render.hardbreaks = true;
-    // options.render.unsafe_ = true;
+    options.render.unsafe_ = true;
     Self { settings, options }
   }
 
@@ -89,6 +89,8 @@ impl Renderer {
   pub fn render_footer(&self, _content: &Content) -> Result<Markup, AnyError> {
     let footer_settings = self.settings.footer.clone().unwrap_or_default();
     let result = html! {
+      br clear="all";
+      div style="padding-top: 100px; width: 100%;";
       footer class="footer" {
         (footer_settings.get_link_list()?)
       }

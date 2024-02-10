@@ -14,8 +14,7 @@ impl Post {
   pub fn get_output_path(&self, settings: &Settings, content_file_path: &Path) -> Result<PathBuf, AnyError> {
     let content_path = settings.get_absolute_content_path();
     let relative_path = content_file_path.strip_prefix(&content_path)?;
-    let mut file_name = relative_path.to_str().unwrap().to_string().replace(".md", "/");
-    file_name.push_str("index.html");
+    let file_name = relative_path.to_str().unwrap().to_string().replace(".md", ".html");
     let mut output_path = settings.get_absolute_output_path();
     output_path.push(file_name);
     Ok(output_path)

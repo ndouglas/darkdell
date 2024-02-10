@@ -1,7 +1,7 @@
 ---
 title: "My Favorite Albums"
 date: 2024-02-10T10:41:50-05:00
-draft: false
+draft: true
 type: 'post'
 ---
 I've recently refactored things in this SSG slightly to make working with images easier, and what better way to test that than to make a list of my favorite albums? With, like, album covers and stuff?

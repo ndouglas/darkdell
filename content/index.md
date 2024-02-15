@@ -11,6 +11,7 @@ type: 'index'
 
 # Posts
 
+- [Three Great Albums](./posts/2024-02-10--three-great-albums/)
 - [Pathogenic Culture](./posts/2024-02-08--pathogenic-culture/)
 - [Outsourcing Critical Thought](./posts/2024-02-03--outsourcing-critical-thought/)
 - [_The Biggest Loser_ and the Legend of Metabolic Damage](./posts/2024-01-10--the-biggest-loser-and-the-legend-of-metabolic-damage/)

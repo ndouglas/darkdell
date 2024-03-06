@@ -1,7 +1,7 @@
 ---
 title: "Three Great Albums"
 date: 2024-02-10T10:41:50-05:00
-draft: true
+draft: false
 type: 'post'
 ---
 I've recently refactored things in this SSG slightly to make working with images easier, and what better way to test that than to talk about a couple albums I like? With, like, album covers and stuff?

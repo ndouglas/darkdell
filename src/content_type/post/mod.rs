@@ -23,7 +23,9 @@ impl Post {
   /// Render the body.
   pub fn render_body(&self, _settings: &Settings, options: &Options, content: &Content) -> Result<Markup, AnyError> {
     let content_html = markdown_to_html(&content.raw_content, options);
+    let title = content.front_matter.title.clone().unwrap_or_default();
     let result = html! {
+      h1 { (title) }
       div class="content" {
         (PreEscaped(content_html))
       }

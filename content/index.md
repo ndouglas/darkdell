@@ -11,6 +11,7 @@ type: 'index'
 
 # Posts
 
+- [Another Dream About Friends](./posts/2024-04-12--another-dream-about-friends/)
 - [Three Great Albums](./posts/2024-02-10--three-great-albums/)
 - [Pathogenic Culture](./posts/2024-02-08--pathogenic-culture/)
 - [Outsourcing Critical Thought](./posts/2024-02-03--outsourcing-critical-thought/)

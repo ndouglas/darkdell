@@ -43,7 +43,7 @@ impl Content {
       if file_path.is_file() && file_path.extension().is_some() {
         let extension = file_path.extension().unwrap();
         if extension != "md" {
-          let relative_path = file_path.strip_prefix(&settings.get_absolute_content_path())?;
+          let relative_path = file_path.strip_prefix(settings.get_absolute_content_path())?;
           let mut output_path = settings.get_absolute_output_path();
           output_path.push(relative_path);
           create_dir_all(output_path.parent().unwrap())?;

@@ -1,6 +1,6 @@
 +++
 date = '2025-04-26T21:13:40-04:00'
-draft = true
+draft = false
 title = 'Postbabelfish'
 +++
 So a job application had a really interesting question: "What would you do if money was not a concern?"

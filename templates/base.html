@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${title} — Nathan Douglas</title>
+  <script>
+    (function() {
+      var theme = localStorage.getItem('theme') || 'consumed';
+      document.documentElement.setAttribute('data-theme', theme);
+      document.write('<link id="theme-css" rel="stylesheet" href="/themes/' + theme + '/style.css">');
+    })();
+  </script>
+  <script>var lastPostDate = "${last_post_date}";</script>
+</head>
+<body>
+  <nav>
+    <a href="/" class="site-name">Nathan Douglas</a>
+    <div class="nav-links">
+      <a href="/blog/">blog</a>
+      <a href="/projects/">projects</a>
+      <a href="/reading/">reading</a>
+    </div>
+  </nav>
+  <main>
+    ${content}
+  </main>
+  <canvas id="ants-canvas"></canvas>
+  <button id="theme-switcher" aria-label="Switch theme">consumed</button>
+  <script src="/themes/switcher.js"></script>
+  <script src="/themes/consumed/ants.js"></script>
+</body>
+</html>

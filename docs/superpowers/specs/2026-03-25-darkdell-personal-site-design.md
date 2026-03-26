@@ -33,8 +33,9 @@ A single Python script, approximately 150–200 lines. One external dependency: 
 - Posts are markdown files in `content/posts/`. No frontmatter required.
 - Title: first `# heading` in the file. If absent, derived from filename (`b-trees.md` → "B Trees").
 - Date: file mtime. No manual date entry.
-- Optional YAML frontmatter supported but never required. Can override `title` and `date` if desired.
+- Optional YAML frontmatter supported but never required. Delimited by `---` fences. Parsed with `pyyaml` (added as a second dependency). Can override `title` and `date` if desired.
 - Pages work identically but live in `content/pages/`.
+- Page routing convention: `content/pages/foo.md` → `public/foo/index.html` → served at `/foo/`. The filename (minus extension) becomes the URL path segment.
 
 ### Templates
 
@@ -136,7 +137,7 @@ The site's "health" affects the simulation's behavior:
   - **Color saturation:** Rich at v=1.0, near-grayscale at v=0.0
   - **Food spawn rate:** Active at v=1.0, near-zero at v=0.0
 - The site is never fully dead — even at v=0.0, a few ants wander with dim trails. A single ember.
-- Visitor "nourishment": each page view could give a small temporary vitality boost (localStorage counter, decays over time). No server-side tracking.
+- Visitor "nourishment" (nice-to-have, not required for initial build): each page view could give a small temporary vitality boost (localStorage counter, decays over time). No server-side tracking.
 
 ### Performance constraints
 

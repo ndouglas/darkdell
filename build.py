@@ -36,6 +36,7 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
             title = _humanize_filename(filename)
 
     # Extract date
+    # Priority: frontmatter > filename date prefix (YYYY-MM-DD-*) > mtime > now
     date = None
     if "date" in frontmatter:
         d = frontmatter["date"]
@@ -43,10 +44,14 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
             date = d
         else:
             date = datetime.fromisoformat(str(d))
-    elif mtime is not None:
-        date = datetime.fromtimestamp(mtime)
     else:
-        date = datetime.now()
+        date_prefix = re.match(r"^(\d{4}-\d{2}-\d{2})-", filename)
+        if date_prefix:
+            date = datetime.fromisoformat(date_prefix.group(1))
+        elif mtime is not None:
+            date = datetime.fromtimestamp(mtime)
+        else:
+            date = datetime.now()
 
     # Render markdown to HTML
     html = markdown.markdown(body, extensions=["fenced_code", "codehilite", "tables"])
@@ -55,8 +60,10 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
 
 
 def _humanize_filename(filename: str) -> str:
-    """Convert 'b-trees-are-neat.md' to 'B Trees Are Neat'."""
+    """Convert '2026-03-25-b-trees-are-neat.md' to 'B Trees Are Neat'."""
     stem = Path(filename).stem
+    # Strip date prefix if present
+    stem = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", stem)
     return stem.replace("-", " ").replace("_", " ").title()
 
 
@@ -81,7 +88,10 @@ def build_site(site_dir: Path) -> None:
             raw = md_file.read_text()
             mtime = md_file.stat().st_mtime
             parsed = parse_content(raw, filename=md_file.name, mtime=mtime)
-            parsed["slug"] = md_file.stem
+            slug = md_file.stem
+            # Strip date prefix from slug: 2026-03-25-hello -> hello
+            slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", slug)
+            parsed["slug"] = slug
             posts.append(parsed)
     posts.sort(key=lambda p: p["date"], reverse=True)
 

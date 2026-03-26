@@ -122,6 +122,19 @@ def test_build_copies_theme_assets(tmp_site):
     assert (tmp_site / "public" / "themes" / "consumed" / "style.css").exists()
 
 
+def test_last_post_date_is_recent(tmp_site):
+    """lastPostDate reflects the most recent post's date."""
+    from build import build_site
+    from datetime import datetime
+
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "index.html").read_text()
+
+    # Should contain today's date (since the test creates files "now")
+    today = datetime.now().strftime("%Y-%m-%d")
+    assert today in index
+
+
 @pytest.fixture
 def tmp_site(tmp_path):
     """Create a minimal site directory for testing."""

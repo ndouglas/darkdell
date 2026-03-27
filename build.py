@@ -80,44 +80,64 @@ def build_site(site_dir: Path) -> None:
     # Load template
     template_str = (site_dir / "templates" / "base.html").read_text()
 
-    # Parse all posts
-    posts = []
-    posts_dir = site_dir / "content" / "posts"
-    if posts_dir.exists():
-        for md_file in sorted(posts_dir.glob("*.md")):
-            raw = md_file.read_text()
-            mtime = md_file.stat().st_mtime
-            parsed = parse_content(raw, filename=md_file.name, mtime=mtime)
-            slug = md_file.stem
-            # Strip date prefix from slug: 2026-03-25-hello -> hello
-            slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", slug)
-            parsed["slug"] = slug
-            posts.append(parsed)
-    posts.sort(key=lambda p: p["date"], reverse=True)
+    # Blog sections: (content_dir, url_prefix, index_title)
+    blog_sections = [
+        ("posts", "blog", "Blog"),
+        ("posts-fr", "fr", "Blog (Français)"),
+    ]
 
-    # Determine last post date
-    last_post_date = posts[0]["date"].strftime("%Y-%m-%d") if posts else "1970-01-01"
+    all_posts = []  # collect all posts for vitality calculation
+    for content_subdir, url_prefix, index_title in blog_sections:
+        posts = []
+        posts_dir = site_dir / "content" / content_subdir
+        if posts_dir.exists():
+            for md_file in sorted(posts_dir.glob("*.md")):
+                raw = md_file.read_text()
+                mtime = md_file.stat().st_mtime
+                parsed = parse_content(raw, filename=md_file.name, mtime=mtime)
+                slug = md_file.stem
+                slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", slug)
+                parsed["slug"] = slug
+                posts.append(parsed)
+        posts.sort(key=lambda p: p["date"], reverse=True)
+        all_posts.extend(posts)
 
-    # Render each post
-    for post in posts:
-        post_dir = public / "blog" / post["slug"]
-        post_dir.mkdir(parents=True, exist_ok=True)
-        html = _render_template(template_str, post["title"], post["html"], last_post_date)
-        (post_dir / "index.html").write_text(html)
+        # Render each post
+        for post in posts:
+            post_dir = public / url_prefix / post["slug"]
+            post_dir.mkdir(parents=True, exist_ok=True)
+            # last_post_date filled in after all sections parsed
+            post["_url_prefix"] = url_prefix
+            post["_out_dir"] = post_dir
 
-    # Render blog index
-    blog_index_dir = public / "blog"
-    blog_index_dir.mkdir(parents=True, exist_ok=True)
-    blog_list_html = "<h1>Blog</h1>\n<ul class=\"post-list\">\n"
-    for post in posts:
-        date_str = post["date"].strftime("%Y-%m-%d")
-        blog_list_html += (
-            f'  <li><time datetime="{date_str}">{date_str}</time> '
-            f'<a href="/blog/{post["slug"]}/">{post["title"]}</a></li>\n'
-        )
-    blog_list_html += "</ul>"
-    html = _render_template(template_str, "Blog", blog_list_html, last_post_date)
-    (blog_index_dir / "index.html").write_text(html)
+        # Store for index rendering after last_post_date is known
+        posts_dir_data = (posts, url_prefix, index_title)
+        blog_sections[blog_sections.index((content_subdir, url_prefix, index_title))] = posts_dir_data
+
+    # Determine last post date from all sections
+    all_posts.sort(key=lambda p: p["date"], reverse=True)
+    last_post_date = all_posts[0]["date"].strftime("%Y-%m-%d") if all_posts else "1970-01-01"
+
+    # Now render all posts and indexes with last_post_date
+    for posts, url_prefix, index_title in blog_sections:
+        for post in posts:
+            post_dir = post["_out_dir"]
+            html = _render_template(template_str, post["title"], post["html"], last_post_date)
+            (post_dir / "index.html").write_text(html)
+
+        # Render section index
+        index_dir = public / url_prefix
+        index_dir.mkdir(parents=True, exist_ok=True)
+        blog_list_html = f"<h1>{index_title}</h1>\n<ul class=\"post-list\">\n"
+        for post in posts:
+            date_str = post["date"].strftime("%Y-%m-%d")
+            blog_list_html += (
+                f'  <li><time datetime="{date_str}">{date_str}</time> '
+                f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a></li>\n'
+            )
+        blog_list_html += "</ul>"
+        html = _render_template(template_str, index_title, blog_list_html, last_post_date)
+        (index_dir / "index.html").write_text(html)
 
     # Render pages
     pages_dir = site_dir / "content" / "pages"

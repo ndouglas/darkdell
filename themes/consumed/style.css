@@ -73,6 +73,8 @@ main h2 { font-size: 1.2rem; margin: 2rem 0 0.5rem; color: #d4b8a8; }
 main h3 { font-size: 1rem; margin: 1.5rem 0 0.5rem; color: #baa090; }
 
 main p { margin-bottom: 1rem; }
+main ul, main ol { margin: 0.5rem 0 1rem 1.5rem; }
+main li { margin-bottom: 0.25rem; }
 main a { color: #c08060; text-decoration: none; border-bottom: 1px solid #5a3828; }
 main a:hover { color: #d4b8a8; border-color: #d4b8a8; }
 

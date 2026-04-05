@@ -139,6 +139,9 @@ def build_site(site_dir: Path) -> None:
         html = _render_template(template_str, index_title, blog_list_html, last_post_date)
         (index_dir / "index.html").write_text(html)
 
+    # Build recent posts HTML for the index page
+    recent_posts_html = _build_recent_posts_html(blog_sections)
+
     # Render pages
     pages_dir = site_dir / "content" / "pages"
     if pages_dir.exists():
@@ -150,6 +153,7 @@ def build_site(site_dir: Path) -> None:
 
             if slug == "index":
                 out_dir = public
+                parsed["html"] += recent_posts_html
             else:
                 out_dir = public / slug
                 out_dir.mkdir(parents=True, exist_ok=True)
@@ -172,6 +176,32 @@ def build_site(site_dir: Path) -> None:
     if themes_dir.exists():
         dest_themes = public / "themes"
         shutil.copytree(themes_dir, dest_themes)
+
+
+def _build_recent_posts_html(blog_sections: list, max_posts: int = 5) -> str:
+    """Build HTML listing recent posts across all blog sections."""
+    all_recent = []
+    section_labels = {"blog": "EN", "fr": "FR"}
+    for posts, url_prefix, _index_title in blog_sections:
+        for post in posts:
+            all_recent.append((post, url_prefix))
+    all_recent.sort(key=lambda pair: pair[0]["date"], reverse=True)
+    all_recent = all_recent[:max_posts]
+
+    if not all_recent:
+        return ""
+
+    html = '\n<ul class="post-list">\n'
+    for post, url_prefix in all_recent:
+        date_str = post["date"].strftime("%Y-%m-%d")
+        label = section_labels.get(url_prefix, "")
+        html += (
+            f'  <li><time datetime="{date_str}">{date_str}</time> '
+            f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a>'
+            f" ({label})</li>\n"
+        )
+    html += "</ul>"
+    return html
 
 
 def _render_template(template_str: str, title: str, content: str, last_post_date: str) -> str:

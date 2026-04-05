@@ -18,3 +18,5 @@ If you're interested in hiring me, here's some professional information:
 - [GitHub](https://github.com/ndouglas)
 
 [Blog](/blog/) · [Français](/fr/) · [Projects](/projects/) · [Reading](/reading/) · [Links](/links/)
+
+## Recent Posts

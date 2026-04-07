@@ -11,3 +11,7 @@ What I'm currently shuffling between. The system: pick 2-3 books, read a pomodor
 ## Queue
 
 - *Team Topologies* — Matthew Skelton & Manuel Pais
+
+## Recently Finished
+
+- *The Book of Tea*, Kakuza Okakura

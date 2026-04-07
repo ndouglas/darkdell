@@ -36,7 +36,6 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
             title = _humanize_filename(filename)
 
     # Extract date
-    # Priority: frontmatter > filename date prefix (YYYY-MM-DD-*) > mtime > now
     date = None
     if "date" in frontmatter:
         d = frontmatter["date"]
@@ -44,14 +43,10 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
             date = d
         else:
             date = datetime.fromisoformat(str(d))
+    elif mtime is not None:
+        date = datetime.fromtimestamp(mtime)
     else:
-        date_prefix = re.match(r"^(\d{4}-\d{2}-\d{2})-", filename)
-        if date_prefix:
-            date = datetime.fromisoformat(date_prefix.group(1))
-        elif mtime is not None:
-            date = datetime.fromtimestamp(mtime)
-        else:
-            date = datetime.now()
+        date = datetime.now()
 
     # Render markdown to HTML
     html = markdown.markdown(body, extensions=["fenced_code", "codehilite", "tables"])
@@ -60,11 +55,35 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
 
 
 def _humanize_filename(filename: str) -> str:
-    """Convert '2026-03-25-b-trees-are-neat.md' to 'B Trees Are Neat'."""
+    """Convert 'DD-slug.md' or 'slug.md' to 'Slug' title."""
     stem = Path(filename).stem
-    # Strip date prefix if present
-    stem = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", stem)
+    # Strip day prefix if present (e.g. "25-hello-world" -> "hello-world")
+    stem = re.sub(r"^\d{2}-", "", stem)
     return stem.replace("-", " ").replace("_", " ").title()
+
+
+def extract_post_date_and_slug(relative_path: Path) -> tuple[datetime, str]:
+    """Extract date and slug from a nested post path like 2026/03/25-hello-world.md.
+
+    Expected structure: YYYY/MM/DD-slug.md
+    Returns (datetime, slug_string).
+    """
+    parts = relative_path.parts
+    if len(parts) != 3:
+        raise ValueError(
+            f"Post {relative_path} doesn't match expected YYYY/MM/DD-slug.md structure"
+        )
+    year, month, filename = parts
+    stem = Path(filename).stem
+    day_match = re.match(r"^(\d{2})-(.+)$", stem)
+    if not day_match:
+        raise ValueError(
+            f"Post filename {filename} doesn't match expected DD-slug format"
+        )
+    day = day_match.group(1)
+    slug = day_match.group(2)
+    date = datetime.fromisoformat(f"{year}-{month}-{day}")
+    return date, slug
 
 
 def build_site(site_dir: Path) -> None:
@@ -91,13 +110,20 @@ def build_site(site_dir: Path) -> None:
         posts = []
         posts_dir = site_dir / "content" / content_subdir
         if posts_dir.exists():
-            for md_file in sorted(posts_dir.glob("*.md")):
+            seen_slugs: dict[str, Path] = {}
+            for md_file in sorted(posts_dir.rglob("*.md")):
+                relative = md_file.relative_to(posts_dir)
+                date, slug = extract_post_date_and_slug(relative)
                 raw = md_file.read_text()
-                mtime = md_file.stat().st_mtime
-                parsed = parse_content(raw, filename=md_file.name, mtime=mtime)
-                slug = md_file.stem
-                slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", slug)
+                parsed = parse_content(raw, filename=md_file.name, mtime=md_file.stat().st_mtime)
+                parsed["date"] = date
                 parsed["slug"] = slug
+                if slug in seen_slugs:
+                    raise ValueError(
+                        f"Duplicate post slug '{slug}': "
+                        f"{seen_slugs[slug]} and {md_file.relative_to(site_dir)}"
+                    )
+                seen_slugs[slug] = md_file.relative_to(site_dir)
                 posts.append(parsed)
         posts.sort(key=lambda p: p["date"], reverse=True)
         all_posts.extend(posts)

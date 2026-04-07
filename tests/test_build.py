@@ -16,8 +16,8 @@ def test_extract_title_from_heading():
 def test_extract_title_from_filename():
     """When no heading, title is derived from filename."""
     from build import parse_content
-    result = parse_content("Just some content, no heading.", filename="b-trees-are-neat.md")
-    assert result["title"] == "B Trees Are Neat"
+    result = parse_content("Just some content, no heading.", filename="25-hello-world.md")
+    assert result["title"] == "Hello World"
 
 
 def test_frontmatter_overrides_title():
@@ -84,14 +84,14 @@ def test_build_creates_page_html(tmp_site):
 def test_posts_sorted_reverse_chron(tmp_site):
     """Blog index lists posts newest first."""
     from build import build_site
-    import time
 
-    # Create two posts with different mtimes
-    post_old = tmp_site / "content" / "posts" / "old-post.md"
-    post_old.write_text("# Old Post\n\nOld content.")
-    time.sleep(0.1)
-    post_new = tmp_site / "content" / "posts" / "new-post.md"
-    post_new.write_text("# New Post\n\nNew content.")
+    old_dir = tmp_site / "content" / "posts" / "2026" / "01"
+    old_dir.mkdir(parents=True, exist_ok=True)
+    (old_dir / "01-old-post.md").write_text("# Old Post\n\nOld content.")
+
+    new_dir = tmp_site / "content" / "posts" / "2026" / "04"
+    new_dir.mkdir(parents=True, exist_ok=True)
+    (new_dir / "01-new-post.md").write_text("# New Post\n\nNew content.")
 
     build_site(tmp_site)
     index_html = (tmp_site / "public" / "blog" / "index.html").read_text()
@@ -130,24 +130,51 @@ def test_last_post_date_is_recent(tmp_site):
     build_site(tmp_site)
     index = (tmp_site / "public" / "index.html").read_text()
 
-    # Should contain today's date (since the test creates files "now")
-    today = datetime.now().strftime("%Y-%m-%d")
-    assert today in index
+    # Should contain the date from the nested directory structure (2026-03-25)
+    assert "2026-03-25" in index
+
+
+def test_build_finds_nested_posts(tmp_site):
+    """Building discovers posts in YYYY/MM/DD-slug.md structure."""
+    from build import build_site
+    build_site(tmp_site)
+    output = tmp_site / "public" / "blog" / "hello-world" / "index.html"
+    assert output.exists()
+    assert "Hello World" in output.read_text()
+
+
+def test_build_errors_on_slug_collision(tmp_site):
+    """Building fails with clear error if two posts produce the same slug."""
+    colliding = tmp_site / "content" / "posts" / "2026" / "04"
+    colliding.mkdir(parents=True)
+    (colliding / "10-hello-world.md").write_text("# Hello World Again\n\nDuplicate slug.")
+
+    from build import build_site
+    with pytest.raises(ValueError, match="Duplicate post slug"):
+        build_site(tmp_site)
+
+
+def test_date_from_directory_structure():
+    """Date is extracted from YYYY/MM/DD-slug.md path components."""
+    from build import extract_post_date_and_slug
+    date, slug = extract_post_date_and_slug(Path("2026/03/25-hello-world.md"))
+    assert date.year == 2026
+    assert date.month == 3
+    assert date.day == 25
+    assert slug == "hello-world"
 
 
 @pytest.fixture
 def tmp_site(tmp_path):
     """Create a minimal site directory for testing."""
-    # Content
     pages = tmp_path / "content" / "pages"
     pages.mkdir(parents=True)
     (pages / "index.md").write_text("# Welcome\n\nThis is the landing page.")
 
-    posts = tmp_path / "content" / "posts"
+    posts = tmp_path / "content" / "posts" / "2026" / "03"
     posts.mkdir(parents=True)
-    (posts / "hello-world.md").write_text("# Hello World\n\nFirst post.")
+    (posts / "25-hello-world.md").write_text("# Hello World\n\nFirst post.")
 
-    # Template
     templates = tmp_path / "templates"
     templates.mkdir()
     (templates / "base.html").write_text(
@@ -155,7 +182,6 @@ def tmp_site(tmp_path):
         "<body>${nav}${content}</body></html>"
     )
 
-    # Theme stubs
     for theme in ("consumed", "garish", "clean"):
         d = tmp_path / "themes" / theme
         d.mkdir(parents=True)

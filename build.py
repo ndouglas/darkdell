@@ -115,7 +115,7 @@ def build_site(site_dir: Path) -> None:
                 relative = md_file.relative_to(posts_dir)
                 date, slug = extract_post_date_and_slug(relative)
                 raw = md_file.read_text()
-                parsed = parse_content(raw, filename=md_file.name, mtime=md_file.stat().st_mtime)
+                parsed = parse_content(raw, filename=md_file.name)
                 parsed["date"] = date
                 parsed["slug"] = slug
                 if slug in seen_slugs:

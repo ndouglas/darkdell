@@ -12,6 +12,8 @@ deploy: build
 
 new:
 	@read -p "Post slug: " slug; \
-	touch "content/posts/$$slug.md"; \
-	echo "# $$slug" > "content/posts/$$slug.md"; \
-	$${EDITOR:-vim} "content/posts/$$slug.md"
+	dir="content/posts/$$(date +%Y)/$$(date +%m)"; \
+	mkdir -p "$$dir"; \
+	file="$$dir/$$(date +%d)-$$slug.md"; \
+	echo "# $$slug" > "$$file"; \
+	$${EDITOR:-vim} "$$file"

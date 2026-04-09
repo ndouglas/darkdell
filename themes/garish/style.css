@@ -138,4 +138,16 @@ main::after {
 }
 #theme-switcher:hover { background: #00ffff; color: #000; }
 
+/* Footnotes */
+.footnote {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 3px dashed #00ffff;
+  font-size: 0.85rem;
+}
+.footnote ol { margin-left: 1.5rem; }
+.footnote li { margin-bottom: 0.4rem; }
+.footnote-ref { font-size: 0.75em; vertical-align: super; text-decoration: none; color: #8000ff; font-weight: bold; }
+.footnote-backref { text-decoration: none; margin-left: 0.25em; }
+
 #ants-canvas { display: none; }

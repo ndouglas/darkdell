@@ -49,7 +49,7 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
         date = datetime.now()
 
     # Render markdown to HTML
-    html = markdown.markdown(body, extensions=["fenced_code", "codehilite", "tables"])
+    html = markdown.markdown(body, extensions=["fenced_code", "codehilite", "tables", "footnotes"])
 
     return {"title": title, "date": date, "html": html, "frontmatter": frontmatter}
 

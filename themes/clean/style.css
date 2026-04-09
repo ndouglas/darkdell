@@ -85,4 +85,17 @@ main pre code { background: none; padding: 0; }
 }
 #theme-switcher:hover { opacity: 1; }
 
+/* Footnotes */
+.footnote {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.85rem;
+  color: #555;
+}
+.footnote ol { margin-left: 1.5rem; }
+.footnote li { margin-bottom: 0.4rem; }
+.footnote-ref { font-size: 0.75em; vertical-align: super; text-decoration: none; }
+.footnote-backref { text-decoration: none; margin-left: 0.25em; }
+
 #ants-canvas { display: none; }

@@ -134,6 +134,19 @@ main pre code { background: none; padding: 0; }
   image-rendering: pixelated;
 }
 
+/* Footnotes */
+.footnote {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+  color: #7a6858;
+}
+.footnote ol { margin-left: 1.5rem; }
+.footnote li { margin-bottom: 0.4rem; }
+.footnote-ref { font-size: 0.75em; vertical-align: super; text-decoration: none; border-bottom: none; }
+.footnote-backref { text-decoration: none; border-bottom: none; margin-left: 0.25em; }
+
 /* Reduced motion: hide canvas, show static gradient instead */
 @media (prefers-reduced-motion: reduce) {
   #ants-canvas { display: none; }

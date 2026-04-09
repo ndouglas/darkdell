@@ -4,7 +4,7 @@ Shortly before saving and publishing the first draft of this post, I realized I 
 
 I recently took some time off from working through calculus again on [Math Academy](https://mathacademy.com/) [^1]. Well, okay, three months. And yesterday I mentally slumped in defeat, returned to the site, and took the placement exam.
 
-I said "mentally slumped in defeat," but that's not right. I _fucked up_, and yesterday, I admitted it on some level. But subconsciously. This blog post is the rest of that admission, the conscious and public part.
+I said "mentally slumped in defeat," but that's not right. I _fucked up_, and yesterday, I admitted it on some level. But subconsciously. I slumped in abject _shame_. This blog post is the rest of that admission, the conscious and public part.
 
 The placement exam told me I needed to do large chunks of calculus again. I knew that. Because I fucked up.
 

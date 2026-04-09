@@ -2,6 +2,7 @@
 
 People whom I try to keep up with. I think this was called a blogroll for a while.
 
+- [Callan McGill](https://boarders.github.io)
 - [Cameron Eagans](https://cweagans.net)
 - [Chance Chapman](https://rollofthedice2.substack.com)
 - [Elijah Lynn](https://www.elijahlynn.net)

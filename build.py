@@ -3,7 +3,8 @@
 
 import re
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
+from html import escape
 from pathlib import Path
 from string import Template
 
@@ -165,6 +166,22 @@ def build_site(site_dir: Path) -> None:
         html = _render_template(template_str, index_title, blog_list_html, last_post_date)
         (index_dir / "index.html").write_text(html)
 
+        # Render RSS feed
+        feed_descriptions = {
+            "blog": "Nathan Douglas's blog",
+            "fr": "Le blog de Nathan Douglas (en français)",
+        }
+        feed_titles = {
+            "blog": "Nathan Douglas",
+            "fr": "Nathan Douglas (Français)",
+        }
+        feed_xml = _build_rss_feed(
+            posts, url_prefix,
+            feed_titles.get(url_prefix, index_title),
+            feed_descriptions.get(url_prefix, index_title),
+        )
+        (index_dir / "feed.xml").write_text(feed_xml)
+
     # Build recent posts HTML for the index page
     recent_posts_html = _build_recent_posts_html(blog_sections)
 
@@ -202,6 +219,38 @@ def build_site(site_dir: Path) -> None:
     if themes_dir.exists():
         dest_themes = public / "themes"
         shutil.copytree(themes_dir, dest_themes)
+
+
+SITE_URL = "https://darkdell.net"
+
+
+def _build_rss_feed(posts: list, url_prefix: str, title: str, description: str) -> str:
+    """Build an RSS 2.0 XML feed for a list of posts."""
+    feed_url = f"{SITE_URL}/{url_prefix}/feed.xml"
+    items = ""
+    for post in posts[:20]:
+        date_rfc822 = post["date"].replace(tzinfo=timezone.utc).strftime(
+            "%a, %d %b %Y %H:%M:%S +0000"
+        )
+        link = f"{SITE_URL}/{url_prefix}/{post['slug']}/"
+        items += f"""    <item>
+      <title>{escape(post["title"])}</title>
+      <link>{link}</link>
+      <guid>{link}</guid>
+      <pubDate>{date_rfc822}</pubDate>
+      <description>{escape(post["html"])}</description>
+    </item>
+"""
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{escape(title)}</title>
+    <link>{SITE_URL}/{url_prefix}/</link>
+    <description>{escape(description)}</description>
+    <atom:link href="{feed_url}" rel="self" type="application/rss+xml"/>
+{items}  </channel>
+</rss>
+"""
 
 
 def _build_recent_posts_html(blog_sections: list, max_posts: int = 5) -> str:

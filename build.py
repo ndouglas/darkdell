@@ -312,6 +312,34 @@ def build_reading_section(
         )
         (year_dir / "index.html").write_text(page_html)
 
+    # RSS feed
+    feed_url = f"{SITE_URL}/reading/feed.xml"
+    items = ""
+    for book in books[:20]:
+        link = f"{SITE_URL}/reading/{book['year']}/"
+        date_rfc822 = datetime(book["year"], book["month"], 1, tzinfo=timezone.utc).strftime(
+            "%a, %d %b %Y %H:%M:%S +0000"
+        )
+        items += f"""    <item>
+      <title>{escape(book["title"])}</title>
+      <link>{link}</link>
+      <guid isPermaLink="false">{escape(book["title"])} ({book["year"]}-{book["month"]:02d})</guid>
+      <pubDate>{date_rfc822}</pubDate>
+      <description>{escape(book["html"])}</description>
+    </item>
+"""
+    feed_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nathan Douglas — Reading</title>
+    <link>{SITE_URL}/reading/</link>
+    <description>Books I&#x27;ve been reading</description>
+    <atom:link href="{feed_url}" rel="self" type="application/rss+xml"/>
+{items}  </channel>
+</rss>
+"""
+    (out_dir / "feed.xml").write_text(feed_xml)
+
 
 SITE_URL = "https://darkdell.net"
 

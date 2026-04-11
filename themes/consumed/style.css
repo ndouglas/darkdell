@@ -29,9 +29,7 @@ nav {
   max-width: 640px;
   margin: 0 auto;
   padding: 2rem 1rem 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  text-align: center;
 }
 
 .site-name {
@@ -41,9 +39,11 @@ nav {
   letter-spacing: 4px;
   text-transform: uppercase;
   text-shadow: 0 0 6px rgba(220, 180, 160, 0.3);
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
-.nav-links { display: flex; gap: 1rem; }
+.nav-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
 .nav-links a {
   color: #7a6858;
   text-decoration: none;

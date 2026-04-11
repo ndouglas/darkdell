@@ -13,6 +13,7 @@ import markdown
 import yaml
 
 MD_EXTENSIONS = ["fenced_code", "codehilite", "tables", "footnotes"]
+SITE_URL = "https://darkdell.net"
 
 
 def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None = None) -> dict:
@@ -61,7 +62,6 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
 def _humanize_filename(filename: str) -> str:
     """Convert 'DD-slug.md' or 'slug.md' to 'Slug' title."""
     stem = Path(filename).stem
-    # Strip day prefix if present (e.g. "25-hello-world" -> "hello-world")
     stem = re.sub(r"^\d{2}-", "", stem)
     return stem.replace("-", " ").replace("_", " ").title()
 
@@ -119,88 +119,95 @@ def _parse_monthly_files(content_dir: Path) -> list[dict]:
     return months
 
 
-def build_site(site_dir: Path) -> None:
-    """Build the complete site from site_dir into site_dir/public/."""
-    site_dir = Path(site_dir)
-    public = site_dir / "public"
+def _build_rss_feed(items: list[dict], section: str, title: str, description: str) -> str:
+    """Build an RSS 2.0 XML feed.
 
-    # Clean output
-    if public.exists():
-        shutil.rmtree(public)
-    public.mkdir()
+    Each item dict must have: title, link, guid, pub_date, description.
+    """
+    feed_url = f"{SITE_URL}/{section}/feed.xml"
+    items_xml = ""
+    for item in items[:20]:
+        date_rfc822 = item["pub_date"].strftime("%a, %d %b %Y %H:%M:%S +0000")
+        items_xml += f"""    <item>
+      <title>{escape(item["title"])}</title>
+      <link>{item["link"]}</link>
+      <guid>{escape(item["guid"])}</guid>
+      <pubDate>{date_rfc822}</pubDate>
+      <description>{escape(item["description"])}</description>
+    </item>
+"""
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{escape(title)}</title>
+    <link>{SITE_URL}/{section}/</link>
+    <description>{escape(description)}</description>
+    <atom:link href="{feed_url}" rel="self" type="application/rss+xml"/>
+{items_xml}  </channel>
+</rss>
+"""
 
-    # Load template and populate RSS autodiscovery links
-    template_str = (site_dir / "templates" / "base.html").read_text()
-    rss_feeds = [
-        ("Nathan Douglas", "/blog/feed.xml"),
-        ("Nathan Douglas (Français)", "/fr/feed.xml"),
-    ]
-    for section, label in [("reading", "Reading"), ("ideas", "Ideas")]:
-        if (site_dir / "content" / section).exists():
-            rss_feeds.append((f"Nathan Douglas — {label}", f"/{section}/feed.xml"))
-    rss_links = "\n  ".join(
-        f'<link rel="alternate" type="application/rss+xml" title="{t}" href="{h}">'
-        for t, h in rss_feeds
+
+def _render_template(template_str: str, title: str, content: str, last_post_date: str) -> str:
+    """Render the base template with the given content."""
+    return Template(template_str).safe_substitute(
+        title=title,
+        content=content,
+        last_post_date=last_post_date,
+        nav="",
     )
-    template_str = Template(template_str).safe_substitute(rss_links=rss_links)
 
-    # Blog sections: (content_dir, url_prefix, index_title)
-    blog_sections = [
-        ("posts", "blog", "Blog"),
-        ("posts-fr", "fr", "Blog (Français)"),
-    ]
 
-    all_posts = []  # collect all posts for vitality calculation
-    for content_subdir, url_prefix, index_title in blog_sections:
+# ---------------------------------------------------------------------------
+# Section builders — each returns an HTML snippet for the homepage
+# ---------------------------------------------------------------------------
+
+BLOG_SECTIONS = [
+    ("posts", "blog", "Blog", "Nathan Douglas's blog"),
+    ("posts-fr", "fr", "Blog (Français)", "Le blog de Nathan Douglas (en français)"),
+]
+
+BLOG_LABELS = {"blog": "EN", "fr": "FR"}
+
+
+def _build_blog_sections(
+    site_dir: Path, public: Path, template_str: str, last_post_date: str,
+) -> str:
+    """Build all blog sections (EN + FR): posts, indexes, feeds.
+
+    Returns an HTML snippet of recent posts for the homepage.
+    """
+    all_posts = []
+
+    for content_subdir, url_prefix, index_title, feed_description in BLOG_SECTIONS:
         posts = []
         posts_dir = site_dir / "content" / content_subdir
-        if posts_dir.exists():
-            seen_slugs: dict[str, Path] = {}
-            for md_file in sorted(posts_dir.rglob("*.md")):
-                relative = md_file.relative_to(posts_dir)
-                date, slug = extract_post_date_and_slug(relative)
-                raw = md_file.read_text()
-                parsed = parse_content(raw, filename=md_file.name)
-                parsed["date"] = date
-                parsed["slug"] = slug
-                if slug in seen_slugs:
-                    raise ValueError(
-                        f"Duplicate post slug '{slug}': "
-                        f"{seen_slugs[slug]} and {md_file.relative_to(site_dir)}"
-                    )
-                seen_slugs[slug] = md_file.relative_to(site_dir)
-                posts.append(parsed)
-        posts.sort(key=lambda p: p["date"], reverse=True)
-        all_posts.extend(posts)
+        if not posts_dir.exists():
+            continue
 
-        # Render each post
+        seen_slugs: dict[str, Path] = {}
+        for md_file in sorted(posts_dir.rglob("*.md")):
+            relative = md_file.relative_to(posts_dir)
+            date, slug = extract_post_date_and_slug(relative)
+            raw = md_file.read_text()
+            parsed = parse_content(raw, filename=md_file.name)
+            parsed["date"] = date
+            parsed["slug"] = slug
+            if slug in seen_slugs:
+                raise ValueError(
+                    f"Duplicate post slug '{slug}': "
+                    f"{seen_slugs[slug]} and {md_file.relative_to(site_dir)}"
+                )
+            seen_slugs[slug] = md_file.relative_to(site_dir)
+            posts.append(parsed)
+
+        posts.sort(key=lambda p: p["date"], reverse=True)
+        all_posts.extend((post, url_prefix) for post in posts)
+
+        # Render individual posts
         for post in posts:
             post_dir = public / url_prefix / post["slug"]
             post_dir.mkdir(parents=True, exist_ok=True)
-            # last_post_date filled in after all sections parsed
-            post["_url_prefix"] = url_prefix
-            post["_out_dir"] = post_dir
-
-        # Store for index rendering after last_post_date is known
-        posts_dir_data = (posts, url_prefix, index_title)
-        blog_sections[blog_sections.index((content_subdir, url_prefix, index_title))] = posts_dir_data
-
-    # Determine last post date from all sections
-    all_posts.sort(key=lambda p: p["date"], reverse=True)
-    last_post_date = all_posts[0]["date"].strftime("%Y-%m-%d") if all_posts else "1970-01-01"
-
-    # Render monthly sections
-    recent_reading = _build_monthly_section(
-        site_dir, public, template_str, last_post_date, "reading", "Reading"
-    )
-    recent_ideas = _build_monthly_section(
-        site_dir, public, template_str, last_post_date, "ideas", "Ideas"
-    )
-
-    # Now render all posts and indexes with last_post_date
-    for posts, url_prefix, index_title in blog_sections:
-        for post in posts:
-            post_dir = post["_out_dir"]
             html = _render_template(template_str, post["title"], post["html"], last_post_date)
             (post_dir / "index.html").write_text(html)
 
@@ -218,61 +225,37 @@ def build_site(site_dir: Path) -> None:
         html = _render_template(template_str, index_title, blog_list_html, last_post_date)
         (index_dir / "index.html").write_text(html)
 
-        # Render RSS feed
-        feed_descriptions = {
-            "blog": "Nathan Douglas's blog",
-            "fr": "Le blog de Nathan Douglas (en français)",
-        }
-        feed_titles = {
-            "blog": "Nathan Douglas",
-            "fr": "Nathan Douglas (Français)",
-        }
-        feed_xml = _build_rss_feed(
-            posts, url_prefix,
-            feed_titles.get(url_prefix, index_title),
-            feed_descriptions.get(url_prefix, index_title),
-        )
+        # RSS feed
+        feed_items = [
+            {
+                "title": p["title"],
+                "link": f"{SITE_URL}/{url_prefix}/{p['slug']}/",
+                "guid": f"{SITE_URL}/{url_prefix}/{p['slug']}/",
+                "pub_date": p["date"].replace(tzinfo=timezone.utc),
+                "description": p["html"],
+            }
+            for p in posts
+        ]
+        feed_xml = _build_rss_feed(feed_items, url_prefix, index_title, feed_description)
         (index_dir / "feed.xml").write_text(feed_xml)
 
-    # Build recent posts HTML for the index page
-    recent_posts_html = _build_recent_posts_html(blog_sections)
+    # Build recent posts snippet for homepage
+    all_posts.sort(key=lambda pair: pair[0]["date"], reverse=True)
+    recent = all_posts[:5]
+    if not recent:
+        return ""
 
-    # Render pages
-    pages_dir = site_dir / "content" / "pages"
-    if pages_dir.exists():
-        for md_file in pages_dir.glob("*.md"):
-            raw = md_file.read_text()
-            mtime = md_file.stat().st_mtime
-            parsed = parse_content(raw, filename=md_file.name, mtime=mtime)
-            slug = md_file.stem
-
-            if slug == "index":
-                out_dir = public
-                parsed["html"] += recent_posts_html
-                parsed["html"] += recent_reading
-                parsed["html"] += recent_ideas
-            else:
-                out_dir = public / slug
-                out_dir.mkdir(parents=True, exist_ok=True)
-
-            html = _render_template(template_str, parsed["title"], parsed["html"], last_post_date)
-            (out_dir / "index.html").write_text(html)
-
-    # Copy static files
-    static_dir = site_dir / "static"
-    if static_dir.exists():
-        for item in static_dir.iterdir():
-            dest = public / item.name
-            if item.is_dir():
-                shutil.copytree(item, dest)
-            else:
-                shutil.copy2(item, dest)
-
-    # Copy theme assets
-    themes_dir = site_dir / "themes"
-    if themes_dir.exists():
-        dest_themes = public / "themes"
-        shutil.copytree(themes_dir, dest_themes)
+    snippet = '\n<h2>Recent Posts</h2>\n<ul class="post-list">\n'
+    for post, url_prefix in recent:
+        date_str = post["date"].strftime("%Y-%m-%d")
+        label = BLOG_LABELS.get(url_prefix, "")
+        snippet += (
+            f'  <li><time datetime="{date_str}">{date_str}</time> '
+            f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a>'
+            f" ({label})</li>\n"
+        )
+    snippet += "</ul>"
+    return snippet
 
 
 def _build_monthly_section(
@@ -324,32 +307,19 @@ def _build_monthly_section(
         (year_dir / "index.html").write_text(page_html)
 
     # RSS feed
-    feed_url = f"{SITE_URL}/{section}/feed.xml"
-    items = ""
-    for m in months[:20]:
-        month_name = calendar.month_name[m["month"]]
-        link = f"{SITE_URL}/{section}/{m['year']}/"
-        date_rfc822 = datetime(m["year"], m["month"], 1, tzinfo=timezone.utc).strftime(
-            "%a, %d %b %Y %H:%M:%S +0000"
-        )
-        items += f"""    <item>
-      <title>{escape(month_name)} {m["year"]}</title>
-      <link>{link}</link>
-      <guid isPermaLink="false">{section}-{m["year"]}-{m["month"]:02d}</guid>
-      <pubDate>{date_rfc822}</pubDate>
-      <description>{escape(m["html"])}</description>
-    </item>
-"""
-    feed_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Nathan Douglas — {escape(title)}</title>
-    <link>{SITE_URL}/{section}/</link>
-    <description>{escape(title)}</description>
-    <atom:link href="{feed_url}" rel="self" type="application/rss+xml"/>
-{items}  </channel>
-</rss>
-"""
+    feed_items = [
+        {
+            "title": f"{calendar.month_name[m['month']]} {m['year']}",
+            "link": f"{SITE_URL}/{section}/{m['year']}/",
+            "guid": f"{section}-{m['year']}-{m['month']:02d}",
+            "pub_date": datetime(m["year"], m["month"], 1, tzinfo=timezone.utc),
+            "description": m["html"],
+        }
+        for m in months
+    ]
+    feed_xml = _build_rss_feed(
+        feed_items, section, f"Nathan Douglas — {title}", title
+    )
     (out_dir / "feed.xml").write_text(feed_xml)
 
     # Return recent snippet for homepage
@@ -359,72 +329,100 @@ def _build_monthly_section(
     return snippet
 
 
-SITE_URL = "https://darkdell.net"
+# ---------------------------------------------------------------------------
+# Monthly sections — add new ones here
+# ---------------------------------------------------------------------------
+
+MONTHLY_SECTIONS = [
+    ("reading", "Reading"),
+    ("ideas", "Ideas"),
+]
 
 
-def _build_rss_feed(posts: list, url_prefix: str, title: str, description: str) -> str:
-    """Build an RSS 2.0 XML feed for a list of posts."""
-    feed_url = f"{SITE_URL}/{url_prefix}/feed.xml"
-    items = ""
-    for post in posts[:20]:
-        date_rfc822 = post["date"].replace(tzinfo=timezone.utc).strftime(
-            "%a, %d %b %Y %H:%M:%S +0000"
-        )
-        link = f"{SITE_URL}/{url_prefix}/{post['slug']}/"
-        items += f"""    <item>
-      <title>{escape(post["title"])}</title>
-      <link>{link}</link>
-      <guid>{link}</guid>
-      <pubDate>{date_rfc822}</pubDate>
-      <description>{escape(post["html"])}</description>
-    </item>
-"""
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>{escape(title)}</title>
-    <link>{SITE_URL}/{url_prefix}/</link>
-    <description>{escape(description)}</description>
-    <atom:link href="{feed_url}" rel="self" type="application/rss+xml"/>
-{items}  </channel>
-</rss>
-"""
+# ---------------------------------------------------------------------------
+# Main build
+# ---------------------------------------------------------------------------
 
+def build_site(site_dir: Path) -> None:
+    """Build the complete site from site_dir into site_dir/public/."""
+    site_dir = Path(site_dir)
+    public = site_dir / "public"
 
-def _build_recent_posts_html(blog_sections: list, max_posts: int = 5) -> str:
-    """Build HTML listing recent posts across all blog sections."""
-    all_recent = []
-    section_labels = {"blog": "EN", "fr": "FR"}
-    for posts, url_prefix, _index_title in blog_sections:
-        for post in posts:
-            all_recent.append((post, url_prefix))
-    all_recent.sort(key=lambda pair: pair[0]["date"], reverse=True)
-    all_recent = all_recent[:max_posts]
+    if public.exists():
+        shutil.rmtree(public)
+    public.mkdir()
 
-    if not all_recent:
-        return ""
-
-    html = '\n<ul class="post-list">\n'
-    for post, url_prefix in all_recent:
-        date_str = post["date"].strftime("%Y-%m-%d")
-        label = section_labels.get(url_prefix, "")
-        html += (
-            f'  <li><time datetime="{date_str}">{date_str}</time> '
-            f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a>'
-            f" ({label})</li>\n"
-        )
-    html += "</ul>"
-    return html
-
-
-def _render_template(template_str: str, title: str, content: str, last_post_date: str) -> str:
-    """Render the base template with the given content."""
-    return Template(template_str).safe_substitute(
-        title=title,
-        content=content,
-        last_post_date=last_post_date,
-        nav="",  # nav is in the template HTML directly
+    # Load template and populate RSS autodiscovery links
+    template_str = (site_dir / "templates" / "base.html").read_text()
+    rss_feeds = [
+        (title, f"/{prefix}/feed.xml")
+        for _, prefix, title, _ in BLOG_SECTIONS
+    ]
+    for section, label in MONTHLY_SECTIONS:
+        if (site_dir / "content" / section).exists():
+            rss_feeds.append((f"Nathan Douglas — {label}", f"/{section}/feed.xml"))
+    rss_links = "\n  ".join(
+        f'<link rel="alternate" type="application/rss+xml" title="{t}" href="{h}">'
+        for t, h in rss_feeds
     )
+    template_str = Template(template_str).safe_substitute(rss_links=rss_links)
+
+    # Collect all posts to determine last_post_date for vitality
+    all_post_dates = []
+    for content_subdir, *_ in BLOG_SECTIONS:
+        posts_dir = site_dir / "content" / content_subdir
+        if posts_dir.exists():
+            for md_file in posts_dir.rglob("*.md"):
+                relative = md_file.relative_to(posts_dir)
+                date, _ = extract_post_date_and_slug(relative)
+                all_post_dates.append(date)
+    all_post_dates.sort(reverse=True)
+    last_post_date = all_post_dates[0].strftime("%Y-%m-%d") if all_post_dates else "1970-01-01"
+
+    # Build sections — each returns a homepage snippet
+    homepage_snippets = []
+    homepage_snippets.append(
+        _build_blog_sections(site_dir, public, template_str, last_post_date)
+    )
+    for section, title in MONTHLY_SECTIONS:
+        homepage_snippets.append(
+            _build_monthly_section(site_dir, public, template_str, last_post_date, section, title)
+        )
+
+    # Render pages
+    pages_dir = site_dir / "content" / "pages"
+    if pages_dir.exists():
+        for md_file in pages_dir.glob("*.md"):
+            raw = md_file.read_text()
+            mtime = md_file.stat().st_mtime
+            parsed = parse_content(raw, filename=md_file.name, mtime=mtime)
+            slug = md_file.stem
+
+            if slug == "index":
+                out_dir = public
+                parsed["html"] += "".join(homepage_snippets)
+            else:
+                out_dir = public / slug
+                out_dir.mkdir(parents=True, exist_ok=True)
+
+            html = _render_template(template_str, parsed["title"], parsed["html"], last_post_date)
+            (out_dir / "index.html").write_text(html)
+
+    # Copy static files
+    static_dir = site_dir / "static"
+    if static_dir.exists():
+        for item in static_dir.iterdir():
+            dest = public / item.name
+            if item.is_dir():
+                shutil.copytree(item, dest)
+            else:
+                shutil.copy2(item, dest)
+
+    # Copy theme assets
+    themes_dir = site_dir / "themes"
+    if themes_dir.exists():
+        dest_themes = public / "themes"
+        shutil.copytree(themes_dir, dest_themes)
 
 
 if __name__ == "__main__":

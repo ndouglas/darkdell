@@ -1,6 +1,3 @@
-import os
-import tempfile
-import time
 from pathlib import Path
 
 import pytest
@@ -164,34 +161,28 @@ def test_date_from_directory_structure():
     assert slug == "hello-world"
 
 
-def test_parse_monthly_files_strips_h1():
+def test_parse_monthly_files_strips_h1(tmp_path):
     """The optional # heading is stripped from monthly files."""
     from build import _parse_monthly_files
-    import tempfile
-    from pathlib import Path
-    with tempfile.TemporaryDirectory() as tmp:
-        d = Path(tmp) / "2026"
-        d.mkdir()
-        (d / "03.md").write_text("# March 2026\n\n- Item one\n- Item two\n")
-        months = _parse_monthly_files(Path(tmp))
-        assert len(months) == 1
-        assert "March 2026" not in months[0]["html"]
-        assert "Item one" in months[0]["html"]
+    d = tmp_path / "2026"
+    d.mkdir()
+    (d / "03.md").write_text("# March 2026\n\n- Item one\n- Item two\n")
+    months = _parse_monthly_files(tmp_path)
+    assert len(months) == 1
+    assert "March 2026" not in months[0]["html"]
+    assert "Item one" in months[0]["html"]
 
 
-def test_parse_monthly_files_sort_order():
+def test_parse_monthly_files_sort_order(tmp_path):
     """Monthly files sort newest-first."""
     from build import _parse_monthly_files
-    import tempfile
-    from pathlib import Path
-    with tempfile.TemporaryDirectory() as tmp:
-        for m in ("01", "06"):
-            d = Path(tmp) / "2026"
-            d.mkdir(exist_ok=True)
-            (d / f"{m}.md").write_text(f"- Month {m}\n")
-        months = _parse_monthly_files(Path(tmp))
-        assert months[0]["month"] == 6
-        assert months[1]["month"] == 1
+    d = tmp_path / "2026"
+    d.mkdir()
+    for m in ("01", "06"):
+        (d / f"{m}.md").write_text(f"- Month {m}\n")
+    months = _parse_monthly_files(tmp_path)
+    assert months[0]["month"] == 6
+    assert months[1]["month"] == 1
 
 
 def test_build_creates_reading_index(tmp_site):

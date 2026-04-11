@@ -90,28 +90,33 @@ def extract_post_date_and_slug(relative_path: Path) -> tuple[datetime, str]:
     return date, slug
 
 
-def parse_reading_file(raw: str, year: int, month: int) -> list[dict]:
-    """Parse a monthly reading file into individual book entries.
+def _parse_monthly_files(content_dir: Path) -> list[dict]:
+    """Discover and parse YYYY/MM.md files into sorted monthly entries.
 
-    Each ## heading starts a new book. Any leading # heading or intro text is skipped.
-    Returns a list of book dicts sorted by position within the file.
+    Each file's optional # heading is stripped before rendering.
+    Returns entries sorted newest-first.
     """
-    sections = re.split(r"^(?=## )", raw, flags=re.MULTILINE)
-    books = []
-    for position, section in enumerate(s for s in sections if s.startswith("## ")):
-        lines = section.split("\n", 1)
-        title = lines[0].removeprefix("## ").strip()
-        body = lines[1] if len(lines) > 1 else ""
-        html = markdown.markdown(body.strip(), extensions=MD_EXTENSIONS)
-        books.append({
-            "title": title,
-            "html": html,
+    months = []
+    for md_file in sorted(content_dir.rglob("*.md")):
+        relative = md_file.relative_to(content_dir)
+        parts = relative.parts
+        if len(parts) != 2:
+            raise ValueError(
+                f"File {relative} doesn't match YYYY/MM.md structure"
+            )
+        year = int(parts[0])
+        month = int(Path(parts[1]).stem)
+        raw = md_file.read_text()
+        body = re.sub(r"^#\s+.*\n*", "", raw, count=1)
+        html = markdown.markdown(body, extensions=MD_EXTENSIONS)
+        months.append({
             "year": year,
             "month": month,
-            "position": position,
-            "sort_key": (-year, -month, position),
+            "html": html,
+            "sort_key": (-year, -month),
         })
-    return books
+    months.sort(key=lambda m: m["sort_key"])
+    return months
 
 
 def build_site(site_dir: Path) -> None:
@@ -172,11 +177,13 @@ def build_site(site_dir: Path) -> None:
     all_posts.sort(key=lambda p: p["date"], reverse=True)
     last_post_date = all_posts[0]["date"].strftime("%Y-%m-%d") if all_posts else "1970-01-01"
 
-    # Render reading section
-    build_reading_section(site_dir, public, template_str, last_post_date)
-
-    # Render ideas section
-    build_ideas_section(site_dir, public, template_str, last_post_date)
+    # Render monthly sections
+    recent_reading = _build_monthly_section(
+        site_dir, public, template_str, last_post_date, "reading", "Reading"
+    )
+    recent_ideas = _build_monthly_section(
+        site_dir, public, template_str, last_post_date, "ideas", "Ideas"
+    )
 
     # Now render all posts and indexes with last_post_date
     for posts, url_prefix, index_title in blog_sections:
@@ -230,6 +237,8 @@ def build_site(site_dir: Path) -> None:
             if slug == "index":
                 out_dir = public
                 parsed["html"] += recent_posts_html
+                parsed["html"] += recent_reading
+                parsed["html"] += recent_ideas
             else:
                 out_dir = public / slug
                 out_dir.mkdir(parents=True, exist_ok=True)
@@ -254,158 +263,91 @@ def build_site(site_dir: Path) -> None:
         shutil.copytree(themes_dir, dest_themes)
 
 
-def build_reading_section(
-    site_dir: Path, public: Path, template_str: str, last_post_date: str
-) -> None:
-    """Build the /reading/ index and /reading/YYYY/ year pages."""
-    reading_dir = site_dir / "content" / "reading"
-    if not reading_dir.exists():
-        return
+def _build_monthly_section(
+    site_dir: Path, public: Path, template_str: str, last_post_date: str,
+    section: str, title: str, recent_months: int = 3,
+) -> str:
+    """Build a monthly-file section: index page, yearly pages, and RSS feed.
 
-    books = []
-    for md_file in sorted(reading_dir.rglob("*.md")):
-        relative = md_file.relative_to(reading_dir)
-        parts = relative.parts
-        if len(parts) != 2:
-            raise ValueError(
-                f"Reading file {relative} doesn't match YYYY/MM.md structure"
-            )
-        year = int(parts[0])
-        month = int(Path(parts[1]).stem)
-        books.extend(parse_reading_file(md_file.read_text(), year, month))
+    Returns an HTML snippet of recent content for the homepage.
+    """
+    content_dir = site_dir / "content" / section
+    if not content_dir.exists():
+        return ""
 
-    books.sort(key=lambda b: b["sort_key"])
+    months = _parse_monthly_files(content_dir)
+    if not months:
+        return ""
 
-    # Main /reading/ index: recent books + archive links
-    content_html = "<h1>Reading</h1>\n"
-    for book in books[:10]:
-        content_html += f"<h2>{book['title']}</h2>\n{book['html']}\n"
-
-    years = sorted({b["year"] for b in books}, reverse=True)
-    content_html += "<h2>Archive</h2>\n<ul>\n"
-    for y in years:
-        count = sum(1 for b in books if b["year"] == y)
-        content_html += (
-            f'  <li><a href="/reading/{y}/">{y}</a> ({count} books)</li>\n'
-        )
-    content_html += "</ul>"
-
-    out_dir = public / "reading"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    html = _render_template(template_str, "Reading", content_html, last_post_date)
-    (out_dir / "index.html").write_text(html)
-
-    # Yearly pages: books grouped by month
-    for y in years:
-        year_books = [b for b in books if b["year"] == y]
-        year_html = f"<h1>Reading: {y}</h1>\n"
-
-        current_month = None
-        for book in year_books:
-            if book["month"] != current_month:
-                current_month = book["month"]
-                month_name = calendar.month_name[current_month]
-                year_html += f"<h2>{month_name} {y}</h2>\n"
-            year_html += f"<h3>{book['title']}</h3>\n{book['html']}\n"
-
-        year_dir = public / "reading" / str(y)
-        year_dir.mkdir(parents=True, exist_ok=True)
-        page_html = _render_template(
-            template_str, f"Reading: {y}", year_html, last_post_date
-        )
-        (year_dir / "index.html").write_text(page_html)
-
-    # RSS feed
-    feed_url = f"{SITE_URL}/reading/feed.xml"
-    items = ""
-    for book in books[:20]:
-        link = f"{SITE_URL}/reading/{book['year']}/"
-        date_rfc822 = datetime(book["year"], book["month"], 1, tzinfo=timezone.utc).strftime(
-            "%a, %d %b %Y %H:%M:%S +0000"
-        )
-        items += f"""    <item>
-      <title>{escape(book["title"])}</title>
-      <link>{link}</link>
-      <guid isPermaLink="false">{escape(book["title"])} ({book["year"]}-{book["month"]:02d})</guid>
-      <pubDate>{date_rfc822}</pubDate>
-      <description>{escape(book["html"])}</description>
-    </item>
-"""
-    feed_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Nathan Douglas — Reading</title>
-    <link>{SITE_URL}/reading/</link>
-    <description>Books I&#x27;ve been reading</description>
-    <atom:link href="{feed_url}" rel="self" type="application/rss+xml"/>
-{items}  </channel>
-</rss>
-"""
-    (out_dir / "feed.xml").write_text(feed_xml)
-
-
-def build_ideas_section(
-    site_dir: Path, public: Path, template_str: str, last_post_date: str
-) -> None:
-    """Build the /ideas/ index and /ideas/YYYY/ year pages."""
-    ideas_dir = site_dir / "content" / "ideas"
-    if not ideas_dir.exists():
-        return
-
-    months = []
-    for md_file in sorted(ideas_dir.rglob("*.md")):
-        relative = md_file.relative_to(ideas_dir)
-        parts = relative.parts
-        if len(parts) != 2:
-            raise ValueError(
-                f"Ideas file {relative} doesn't match YYYY/MM.md structure"
-            )
-        year = int(parts[0])
-        month = int(Path(parts[1]).stem)
-        raw = md_file.read_text()
-        # Strip optional # heading (used for internal organization)
-        body = re.sub(r"^#\s+.*\n*", "", raw, count=1)
-        html = markdown.markdown(body, extensions=MD_EXTENSIONS)
-        months.append({
-            "year": year,
-            "month": month,
-            "html": html,
-            "sort_key": (-year, -month),
-        })
-
-    months.sort(key=lambda m: m["sort_key"])
-
-    # Main /ideas/ index: recent 3 months + archive links
-    content_html = "<h1>Ideas</h1>\n"
-    for m in months[:3]:
+    # Main index: recent months + archive links
+    content_html = f"<h1>{title}</h1>\n"
+    for m in months[:recent_months]:
         month_name = calendar.month_name[m["month"]]
         content_html += f"<h2>{month_name} {m['year']}</h2>\n{m['html']}\n"
 
     years = sorted({m["year"] for m in months}, reverse=True)
     content_html += "<h2>Archive</h2>\n<ul>\n"
     for y in years:
-        content_html += f'  <li><a href="/ideas/{y}/">{y}</a></li>\n'
+        content_html += f'  <li><a href="/{section}/{y}/">{y}</a></li>\n'
     content_html += "</ul>"
 
-    out_dir = public / "ideas"
+    out_dir = public / section
     out_dir.mkdir(parents=True, exist_ok=True)
-    html = _render_template(template_str, "Ideas", content_html, last_post_date)
+    html = _render_template(template_str, title, content_html, last_post_date)
     (out_dir / "index.html").write_text(html)
 
     # Yearly pages
     for y in years:
         year_months = [m for m in months if m["year"] == y]
-        year_html = f"<h1>Ideas: {y}</h1>\n"
+        year_html = f"<h1>{title}: {y}</h1>\n"
         for m in year_months:
             month_name = calendar.month_name[m["month"]]
             year_html += f"<h2>{month_name} {y}</h2>\n{m['html']}\n"
 
-        year_dir = public / "ideas" / str(y)
+        year_dir = out_dir / str(y)
         year_dir.mkdir(parents=True, exist_ok=True)
         page_html = _render_template(
-            template_str, f"Ideas: {y}", year_html, last_post_date
+            template_str, f"{title}: {y}", year_html, last_post_date
         )
         (year_dir / "index.html").write_text(page_html)
+
+    # RSS feed
+    feed_url = f"{SITE_URL}/{section}/feed.xml"
+    items = ""
+    for m in months[:20]:
+        month_name = calendar.month_name[m["month"]]
+        link = f"{SITE_URL}/{section}/{m['year']}/"
+        date_rfc822 = datetime(m["year"], m["month"], 1, tzinfo=timezone.utc).strftime(
+            "%a, %d %b %Y %H:%M:%S +0000"
+        )
+        items += f"""    <item>
+      <title>{escape(month_name)} {m["year"]}</title>
+      <link>{link}</link>
+      <guid isPermaLink="false">{section}-{m["year"]}-{m["month"]:02d}</guid>
+      <pubDate>{date_rfc822}</pubDate>
+      <description>{escape(m["html"])}</description>
+    </item>
+"""
+    feed_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nathan Douglas — {escape(title)}</title>
+    <link>{SITE_URL}/{section}/</link>
+    <description>{escape(title)}</description>
+    <atom:link href="{feed_url}" rel="self" type="application/rss+xml"/>
+{items}  </channel>
+</rss>
+"""
+    (out_dir / "feed.xml").write_text(feed_xml)
+
+    # Return recent snippet for homepage
+    recent = months[0]
+    month_name = calendar.month_name[recent["month"]]
+    return (
+        f'\n<h2>Recent {title} '
+        f'<a href="/{section}/">({month_name} {recent["year"]})</a></h2>\n'
+        f'{recent["html"]}\n'
+    )
 
 
 SITE_URL = "https://darkdell.net"

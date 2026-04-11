@@ -164,54 +164,45 @@ def test_date_from_directory_structure():
     assert slug == "hello-world"
 
 
-def test_parse_reading_file_extracts_books():
-    """parse_reading_file splits a monthly file into individual book entries."""
-    from build import parse_reading_file
-    raw = "# March 2026\n\n## Book One\n\nFirst paragraph.\n\n## Book Two\n\nSecond paragraph.\n"
-    books = parse_reading_file(raw, 2026, 3)
-    assert len(books) == 2
-    assert books[0]["title"] == "Book One"
-    assert books[1]["title"] == "Book Two"
-    assert "First paragraph." in books[0]["html"]
-    assert "Second paragraph." in books[1]["html"]
+def test_parse_monthly_files_strips_h1():
+    """The optional # heading is stripped from monthly files."""
+    from build import _parse_monthly_files
+    import tempfile
+    from pathlib import Path
+    with tempfile.TemporaryDirectory() as tmp:
+        d = Path(tmp) / "2026"
+        d.mkdir()
+        (d / "03.md").write_text("# March 2026\n\n- Item one\n- Item two\n")
+        months = _parse_monthly_files(Path(tmp))
+        assert len(months) == 1
+        assert "March 2026" not in months[0]["html"]
+        assert "Item one" in months[0]["html"]
 
 
-def test_parse_reading_file_skips_h1():
-    """The optional # heading at the top is not treated as a book."""
-    from build import parse_reading_file
-    raw = "# March 2026\n\nSome intro text.\n\n## Only Book\n\nContent.\n"
-    books = parse_reading_file(raw, 2026, 3)
-    assert len(books) == 1
-    assert books[0]["title"] == "Only Book"
-
-
-def test_parse_reading_file_no_h1():
-    """A reading file with no # heading works fine."""
-    from build import parse_reading_file
-    raw = "## Book A\n\nContent A.\n\n## Book B\n\nContent B.\n"
-    books = parse_reading_file(raw, 2025, 12)
-    assert len(books) == 2
-    assert books[0]["year"] == 2025
-    assert books[0]["month"] == 12
-
-
-def test_parse_reading_file_sort_keys():
-    """Books from the same month have sort keys that respect file ordering."""
-    from build import parse_reading_file
-    raw = "## First\n\nA.\n\n## Second\n\nB.\n"
-    books = parse_reading_file(raw, 2026, 3)
-    assert books[0]["sort_key"] < books[1]["sort_key"]
+def test_parse_monthly_files_sort_order():
+    """Monthly files sort newest-first."""
+    from build import _parse_monthly_files
+    import tempfile
+    from pathlib import Path
+    with tempfile.TemporaryDirectory() as tmp:
+        for m in ("01", "06"):
+            d = Path(tmp) / "2026"
+            d.mkdir(exist_ok=True)
+            (d / f"{m}.md").write_text(f"- Month {m}\n")
+        months = _parse_monthly_files(Path(tmp))
+        assert months[0]["month"] == 6
+        assert months[1]["month"] == 1
 
 
 def test_build_creates_reading_index(tmp_site):
-    """Building produces a /reading/ index page."""
+    """Building produces a /reading/ index page with rendered markdown."""
     from build import build_site
     build_site(tmp_site)
     index = tmp_site / "public" / "reading" / "index.html"
     assert index.exists()
     content = index.read_text()
     assert "Book Alpha" in content
-    assert "Book Beta" in content
+    assert "<em>Book Alpha</em>" in content
     assert "Archive" in content
 
 
@@ -227,36 +218,22 @@ def test_build_creates_reading_year_page(tmp_site):
     assert "March 2026" in content
 
 
-def test_reading_books_ordered_recent_first(tmp_site):
-    """Books across months sort newest-month first on the index."""
+def test_reading_months_ordered_recent_first(tmp_site):
+    """Reading index shows most recent months first."""
     from build import build_site
     old = tmp_site / "content" / "reading" / "2026" / "01.md"
-    old.write_text("## Old Book\n\nOld content.\n")
+    old.write_text("- Old book\n")
 
     build_site(tmp_site)
     index = (tmp_site / "public" / "reading" / "index.html").read_text()
-    assert index.index("Book Alpha") < index.index("Old Book")
-
-
-def test_reading_index_limits_to_10_books(tmp_site):
-    """The /reading/ index shows at most 10 books."""
-    from build import build_site
-    many_books = "\n\n".join(f"## Book {i}\n\nContent {i}." for i in range(12))
-    (tmp_site / "content" / "reading" / "2026" / "03.md").write_text(many_books)
-
-    build_site(tmp_site)
-    index = (tmp_site / "public" / "reading" / "index.html").read_text()
-    assert "Book 9" in index
-    assert "Book 10" not in index
-    year_page = (tmp_site / "public" / "reading" / "2026" / "index.html").read_text()
-    assert "Book 11" in year_page
+    assert index.index("Book Alpha") < index.index("Old book")
 
 
 def test_reading_year_page_groups_by_month(tmp_site):
-    """Year pages group books under month subheadings."""
+    """Year pages group entries under month subheadings."""
     from build import build_site
     jan = tmp_site / "content" / "reading" / "2026" / "01.md"
-    jan.write_text("## January Book\n\nContent.\n")
+    jan.write_text("- January book\n")
 
     build_site(tmp_site)
     year_page = (tmp_site / "public" / "reading" / "2026" / "index.html").read_text()
@@ -317,6 +294,24 @@ def test_ideas_index_limits_to_3_months(tmp_site):
     assert "Idea from month 01" in year_page
 
 
+def test_index_page_has_recent_reading(tmp_site):
+    """Homepage includes recent reading."""
+    from build import build_site
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "index.html").read_text()
+    assert "Recent Reading" in index
+    assert "Book Alpha" in index
+
+
+def test_index_page_has_recent_ideas(tmp_site):
+    """Homepage includes recent ideas."""
+    from build import build_site
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "index.html").read_text()
+    assert "Recent Ideas" in index
+    assert "Idea one" in index
+
+
 @pytest.fixture
 def tmp_site(tmp_path):
     """Create a minimal site directory for testing."""
@@ -345,8 +340,8 @@ def tmp_site(tmp_path):
     reading.mkdir(parents=True)
     (reading / "03.md").write_text(
         "# March 2026\n\n"
-        "## Book Alpha\n\nAlpha content.\n\n"
-        "## Book Beta\n\nBeta content.\n"
+        "- *Book Alpha*, Author A: Alpha content.\n"
+        "- *Book Beta*, Author B: Beta content.\n"
     )
 
     ideas = tmp_path / "content" / "ideas" / "2026"

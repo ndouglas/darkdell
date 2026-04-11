@@ -129,8 +129,20 @@ def build_site(site_dir: Path) -> None:
         shutil.rmtree(public)
     public.mkdir()
 
-    # Load template
+    # Load template and populate RSS autodiscovery links
     template_str = (site_dir / "templates" / "base.html").read_text()
+    rss_feeds = [
+        ("Nathan Douglas", "/blog/feed.xml"),
+        ("Nathan Douglas (Français)", "/fr/feed.xml"),
+    ]
+    for section, label in [("reading", "Reading"), ("ideas", "Ideas")]:
+        if (site_dir / "content" / section).exists():
+            rss_feeds.append((f"Nathan Douglas — {label}", f"/{section}/feed.xml"))
+    rss_links = "\n  ".join(
+        f'<link rel="alternate" type="application/rss+xml" title="{t}" href="{h}">'
+        for t, h in rss_feeds
+    )
+    template_str = Template(template_str).safe_substitute(rss_links=rss_links)
 
     # Blog sections: (content_dir, url_prefix, index_title)
     blog_sections = [
@@ -341,13 +353,10 @@ def _build_monthly_section(
     (out_dir / "feed.xml").write_text(feed_xml)
 
     # Return recent snippet for homepage
-    recent = months[0]
-    month_name = calendar.month_name[recent["month"]]
-    return (
-        f'\n<h2>Recent {title} '
-        f'<a href="/{section}/">({month_name} {recent["year"]})</a></h2>\n'
-        f'{recent["html"]}\n'
-    )
+    snippet = f'\n<h2><a href="/{section}/">Recent {title}</a></h2>\n'
+    for m in months[:2]:
+        snippet += m["html"] + "\n"
+    return snippet
 
 
 SITE_URL = "https://darkdell.net"

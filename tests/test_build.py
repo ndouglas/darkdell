@@ -265,6 +265,58 @@ def test_reading_year_page_groups_by_month(tmp_site):
     assert year_page.index("March 2026") < year_page.index("January 2026")
 
 
+def test_build_creates_ideas_index(tmp_site):
+    """Building produces an /ideas/ index page."""
+    from build import build_site
+    build_site(tmp_site)
+    index = tmp_site / "public" / "ideas" / "index.html"
+    assert index.exists()
+    content = index.read_text()
+    assert "Idea one" in content
+    assert "Idea two" in content
+    assert "Archive" in content
+
+
+def test_build_creates_ideas_year_page(tmp_site):
+    """Building produces yearly /ideas/YYYY/ pages."""
+    from build import build_site
+    build_site(tmp_site)
+    year_page = tmp_site / "public" / "ideas" / "2026" / "index.html"
+    assert year_page.exists()
+    content = year_page.read_text()
+    assert "Ideas: 2026" in content
+    assert "April 2026" in content
+
+
+def test_ideas_months_ordered_recent_first(tmp_site):
+    """Ideas index shows most recent months first."""
+    from build import build_site
+    jan = tmp_site / "content" / "ideas" / "2026" / "01.md"
+    jan.write_text("- Old idea\n")
+
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "ideas" / "index.html").read_text()
+    assert index.index("Idea one") < index.index("Old idea")
+
+
+def test_ideas_index_limits_to_3_months(tmp_site):
+    """The /ideas/ index shows at most 3 months."""
+    from build import build_site
+    for m in ("01", "02", "03"):
+        (tmp_site / "content" / "ideas" / "2026" / f"{m}.md").write_text(
+            f"- Idea from month {m}\n"
+        )
+    # Now we have 4 months: 01, 02, 03, 04
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "ideas" / "index.html").read_text()
+    # April (04), March (03), February (02) should be shown; January (01) should not
+    assert "Idea from month 03" in index
+    assert "Idea from month 01" not in index
+    # But the year page has all of them
+    year_page = (tmp_site / "public" / "ideas" / "2026" / "index.html").read_text()
+    assert "Idea from month 01" in year_page
+
+
 @pytest.fixture
 def tmp_site(tmp_path):
     """Create a minimal site directory for testing."""
@@ -296,5 +348,9 @@ def tmp_site(tmp_path):
         "## Book Alpha\n\nAlpha content.\n\n"
         "## Book Beta\n\nBeta content.\n"
     )
+
+    ideas = tmp_path / "content" / "ideas" / "2026"
+    ideas.mkdir(parents=True)
+    (ideas / "04.md").write_text("- Idea one\n- Idea two\n")
 
     return tmp_path

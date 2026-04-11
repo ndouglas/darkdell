@@ -175,6 +175,9 @@ def build_site(site_dir: Path) -> None:
     # Render reading section
     build_reading_section(site_dir, public, template_str, last_post_date)
 
+    # Render ideas section
+    build_ideas_section(site_dir, public, template_str, last_post_date)
+
     # Now render all posts and indexes with last_post_date
     for posts, url_prefix, index_title in blog_sections:
         for post in posts:
@@ -339,6 +342,70 @@ def build_reading_section(
 </rss>
 """
     (out_dir / "feed.xml").write_text(feed_xml)
+
+
+def build_ideas_section(
+    site_dir: Path, public: Path, template_str: str, last_post_date: str
+) -> None:
+    """Build the /ideas/ index and /ideas/YYYY/ year pages."""
+    ideas_dir = site_dir / "content" / "ideas"
+    if not ideas_dir.exists():
+        return
+
+    months = []
+    for md_file in sorted(ideas_dir.rglob("*.md")):
+        relative = md_file.relative_to(ideas_dir)
+        parts = relative.parts
+        if len(parts) != 2:
+            raise ValueError(
+                f"Ideas file {relative} doesn't match YYYY/MM.md structure"
+            )
+        year = int(parts[0])
+        month = int(Path(parts[1]).stem)
+        raw = md_file.read_text()
+        # Strip optional # heading (used for internal organization)
+        body = re.sub(r"^#\s+.*\n*", "", raw, count=1)
+        html = markdown.markdown(body, extensions=MD_EXTENSIONS)
+        months.append({
+            "year": year,
+            "month": month,
+            "html": html,
+            "sort_key": (-year, -month),
+        })
+
+    months.sort(key=lambda m: m["sort_key"])
+
+    # Main /ideas/ index: recent 3 months + archive links
+    content_html = "<h1>Ideas</h1>\n"
+    for m in months[:3]:
+        month_name = calendar.month_name[m["month"]]
+        content_html += f"<h2>{month_name} {m['year']}</h2>\n{m['html']}\n"
+
+    years = sorted({m["year"] for m in months}, reverse=True)
+    content_html += "<h2>Archive</h2>\n<ul>\n"
+    for y in years:
+        content_html += f'  <li><a href="/ideas/{y}/">{y}</a></li>\n'
+    content_html += "</ul>"
+
+    out_dir = public / "ideas"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    html = _render_template(template_str, "Ideas", content_html, last_post_date)
+    (out_dir / "index.html").write_text(html)
+
+    # Yearly pages
+    for y in years:
+        year_months = [m for m in months if m["year"] == y]
+        year_html = f"<h1>Ideas: {y}</h1>\n"
+        for m in year_months:
+            month_name = calendar.month_name[m["month"]]
+            year_html += f"<h2>{month_name} {y}</h2>\n{m['html']}\n"
+
+        year_dir = public / "ideas" / str(y)
+        year_dir.mkdir(parents=True, exist_ok=True)
+        page_html = _render_template(
+            template_str, f"Ideas: {y}", year_html, last_post_date
+        )
+        (year_dir / "index.html").write_text(page_html)
 
 
 SITE_URL = "https://darkdell.net"

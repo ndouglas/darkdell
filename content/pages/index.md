@@ -16,5 +16,3 @@ If you're interested in hiring me, here's some professional information:
 
 - [My Résumé](https://ndouglas.github.io/resume/resume.pdf)
 - [GitHub](https://github.com/ndouglas)
-
-[Blog](/blog/) · [Français](/fr/) · [Projects](/projects/) · [Reading](/reading/) · [Ideas](/ideas/) · [Links](/links/)

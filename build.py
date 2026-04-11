@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Static site generator for darkdell.net."""
 
+import calendar
 import re
 import shutil
 from datetime import datetime, timezone
@@ -10,6 +11,8 @@ from string import Template
 
 import markdown
 import yaml
+
+MD_EXTENSIONS = ["fenced_code", "codehilite", "tables", "footnotes"]
 
 
 def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None = None) -> dict:
@@ -50,7 +53,7 @@ def parse_content(raw: str, filename: str = "untitled.md", mtime: float | None =
         date = datetime.now()
 
     # Render markdown to HTML
-    html = markdown.markdown(body, extensions=["fenced_code", "codehilite", "tables", "footnotes"])
+    html = markdown.markdown(body, extensions=MD_EXTENSIONS)
 
     return {"title": title, "date": date, "html": html, "frontmatter": frontmatter}
 
@@ -85,6 +88,30 @@ def extract_post_date_and_slug(relative_path: Path) -> tuple[datetime, str]:
     slug = day_match.group(2)
     date = datetime.fromisoformat(f"{year}-{month}-{day}")
     return date, slug
+
+
+def parse_reading_file(raw: str, year: int, month: int) -> list[dict]:
+    """Parse a monthly reading file into individual book entries.
+
+    Each ## heading starts a new book. Any leading # heading or intro text is skipped.
+    Returns a list of book dicts sorted by position within the file.
+    """
+    sections = re.split(r"^(?=## )", raw, flags=re.MULTILINE)
+    books = []
+    for position, section in enumerate(s for s in sections if s.startswith("## ")):
+        lines = section.split("\n", 1)
+        title = lines[0].removeprefix("## ").strip()
+        body = lines[1] if len(lines) > 1 else ""
+        html = markdown.markdown(body.strip(), extensions=MD_EXTENSIONS)
+        books.append({
+            "title": title,
+            "html": html,
+            "year": year,
+            "month": month,
+            "position": position,
+            "sort_key": (-year, -month, position),
+        })
+    return books
 
 
 def build_site(site_dir: Path) -> None:
@@ -144,6 +171,9 @@ def build_site(site_dir: Path) -> None:
     # Determine last post date from all sections
     all_posts.sort(key=lambda p: p["date"], reverse=True)
     last_post_date = all_posts[0]["date"].strftime("%Y-%m-%d") if all_posts else "1970-01-01"
+
+    # Render reading section
+    build_reading_section(site_dir, public, template_str, last_post_date)
 
     # Now render all posts and indexes with last_post_date
     for posts, url_prefix, index_title in blog_sections:
@@ -219,6 +249,68 @@ def build_site(site_dir: Path) -> None:
     if themes_dir.exists():
         dest_themes = public / "themes"
         shutil.copytree(themes_dir, dest_themes)
+
+
+def build_reading_section(
+    site_dir: Path, public: Path, template_str: str, last_post_date: str
+) -> None:
+    """Build the /reading/ index and /reading/YYYY/ year pages."""
+    reading_dir = site_dir / "content" / "reading"
+    if not reading_dir.exists():
+        return
+
+    books = []
+    for md_file in sorted(reading_dir.rglob("*.md")):
+        relative = md_file.relative_to(reading_dir)
+        parts = relative.parts
+        if len(parts) != 2:
+            raise ValueError(
+                f"Reading file {relative} doesn't match YYYY/MM.md structure"
+            )
+        year = int(parts[0])
+        month = int(Path(parts[1]).stem)
+        books.extend(parse_reading_file(md_file.read_text(), year, month))
+
+    books.sort(key=lambda b: b["sort_key"])
+
+    # Main /reading/ index: recent books + archive links
+    content_html = "<h1>Reading</h1>\n"
+    for book in books[:10]:
+        content_html += f"<h2>{book['title']}</h2>\n{book['html']}\n"
+
+    years = sorted({b["year"] for b in books}, reverse=True)
+    content_html += "<h2>Archive</h2>\n<ul>\n"
+    for y in years:
+        count = sum(1 for b in books if b["year"] == y)
+        content_html += (
+            f'  <li><a href="/reading/{y}/">{y}</a> ({count} books)</li>\n'
+        )
+    content_html += "</ul>"
+
+    out_dir = public / "reading"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    html = _render_template(template_str, "Reading", content_html, last_post_date)
+    (out_dir / "index.html").write_text(html)
+
+    # Yearly pages: books grouped by month
+    for y in years:
+        year_books = [b for b in books if b["year"] == y]
+        year_html = f"<h1>Reading: {y}</h1>\n"
+
+        current_month = None
+        for book in year_books:
+            if book["month"] != current_month:
+                current_month = book["month"]
+                month_name = calendar.month_name[current_month]
+                year_html += f"<h2>{month_name} {y}</h2>\n"
+            year_html += f"<h3>{book['title']}</h3>\n{book['html']}\n"
+
+        year_dir = public / "reading" / str(y)
+        year_dir.mkdir(parents=True, exist_ok=True)
+        page_html = _render_template(
+            template_str, f"Reading: {y}", year_html, last_post_date
+        )
+        (year_dir / "index.html").write_text(page_html)
 
 
 SITE_URL = "https://darkdell.net"

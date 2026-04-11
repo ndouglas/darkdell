@@ -164,6 +164,107 @@ def test_date_from_directory_structure():
     assert slug == "hello-world"
 
 
+def test_parse_reading_file_extracts_books():
+    """parse_reading_file splits a monthly file into individual book entries."""
+    from build import parse_reading_file
+    raw = "# March 2026\n\n## Book One\n\nFirst paragraph.\n\n## Book Two\n\nSecond paragraph.\n"
+    books = parse_reading_file(raw, 2026, 3)
+    assert len(books) == 2
+    assert books[0]["title"] == "Book One"
+    assert books[1]["title"] == "Book Two"
+    assert "First paragraph." in books[0]["html"]
+    assert "Second paragraph." in books[1]["html"]
+
+
+def test_parse_reading_file_skips_h1():
+    """The optional # heading at the top is not treated as a book."""
+    from build import parse_reading_file
+    raw = "# March 2026\n\nSome intro text.\n\n## Only Book\n\nContent.\n"
+    books = parse_reading_file(raw, 2026, 3)
+    assert len(books) == 1
+    assert books[0]["title"] == "Only Book"
+
+
+def test_parse_reading_file_no_h1():
+    """A reading file with no # heading works fine."""
+    from build import parse_reading_file
+    raw = "## Book A\n\nContent A.\n\n## Book B\n\nContent B.\n"
+    books = parse_reading_file(raw, 2025, 12)
+    assert len(books) == 2
+    assert books[0]["year"] == 2025
+    assert books[0]["month"] == 12
+
+
+def test_parse_reading_file_sort_keys():
+    """Books from the same month have sort keys that respect file ordering."""
+    from build import parse_reading_file
+    raw = "## First\n\nA.\n\n## Second\n\nB.\n"
+    books = parse_reading_file(raw, 2026, 3)
+    assert books[0]["sort_key"] < books[1]["sort_key"]
+
+
+def test_build_creates_reading_index(tmp_site):
+    """Building produces a /reading/ index page."""
+    from build import build_site
+    build_site(tmp_site)
+    index = tmp_site / "public" / "reading" / "index.html"
+    assert index.exists()
+    content = index.read_text()
+    assert "Book Alpha" in content
+    assert "Book Beta" in content
+    assert "Archive" in content
+
+
+def test_build_creates_reading_year_page(tmp_site):
+    """Building produces yearly /reading/YYYY/ pages."""
+    from build import build_site
+    build_site(tmp_site)
+    year_page = tmp_site / "public" / "reading" / "2026" / "index.html"
+    assert year_page.exists()
+    content = year_page.read_text()
+    assert "Reading: 2026" in content
+    assert "Book Alpha" in content
+    assert "March 2026" in content
+
+
+def test_reading_books_ordered_recent_first(tmp_site):
+    """Books across months sort newest-month first on the index."""
+    from build import build_site
+    old = tmp_site / "content" / "reading" / "2026" / "01.md"
+    old.write_text("## Old Book\n\nOld content.\n")
+
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "reading" / "index.html").read_text()
+    assert index.index("Book Alpha") < index.index("Old Book")
+
+
+def test_reading_index_limits_to_10_books(tmp_site):
+    """The /reading/ index shows at most 10 books."""
+    from build import build_site
+    many_books = "\n\n".join(f"## Book {i}\n\nContent {i}." for i in range(12))
+    (tmp_site / "content" / "reading" / "2026" / "03.md").write_text(many_books)
+
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "reading" / "index.html").read_text()
+    assert "Book 9" in index
+    assert "Book 10" not in index
+    year_page = (tmp_site / "public" / "reading" / "2026" / "index.html").read_text()
+    assert "Book 11" in year_page
+
+
+def test_reading_year_page_groups_by_month(tmp_site):
+    """Year pages group books under month subheadings."""
+    from build import build_site
+    jan = tmp_site / "content" / "reading" / "2026" / "01.md"
+    jan.write_text("## January Book\n\nContent.\n")
+
+    build_site(tmp_site)
+    year_page = (tmp_site / "public" / "reading" / "2026" / "index.html").read_text()
+    assert "March 2026" in year_page
+    assert "January 2026" in year_page
+    assert year_page.index("March 2026") < year_page.index("January 2026")
+
+
 @pytest.fixture
 def tmp_site(tmp_path):
     """Create a minimal site directory for testing."""
@@ -187,5 +288,13 @@ def tmp_site(tmp_path):
         d.mkdir(parents=True)
         (d / "style.css").write_text(f"/* {theme} */")
     (tmp_path / "themes" / "consumed" / "ants.js").write_text("// ants")
+
+    reading = tmp_path / "content" / "reading" / "2026"
+    reading.mkdir(parents=True)
+    (reading / "03.md").write_text(
+        "# March 2026\n\n"
+        "## Book Alpha\n\nAlpha content.\n\n"
+        "## Book Beta\n\nBeta content.\n"
+    )
 
     return tmp_path

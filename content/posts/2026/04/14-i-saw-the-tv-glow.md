@@ -23,3 +23,5 @@ Maybe his father felt the same. He barely seemed human to me...
 Today while exercising, my son and I watched _Star Trek: The Next Generation_ S03E16, "The Offspring", in which Data creates an android child named Lal. Lal gets to choose their own body and gender. My kid nodded approvingly, though we were a little amused by the idea that you _had_ to pick a gender, and that gender choice was permanent. _TNG_ was incredibly, laudably progressive for its time, but not _that_ progressive.
 
 And of course Data and Lal have resonances for some people on the autism spectrum.
+
+I'm very happy I get to share this show with him. And hopefully soon he'll watch _I Saw the TV Glow_ with me too.

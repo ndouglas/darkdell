@@ -7,6 +7,7 @@ People whom I try to keep up with. I think this was called a blogroll for a whil
 - [Chance Chapman](https://rollofthedice2.substack.com)
 - [Elijah Lynn](https://www.elijahlynn.net)
 - [Grace Kind](https://gracekind.net)
+- [Lorin Hochstein](https://surfingcomplexity.blog/)
 - [Nav Rao](https://theperfectlycromulent.substack.com)
 - [Quinn Dougherty](https://newsletter.for-all.dev)
 - [Rob Rix](http://antitypical.com)

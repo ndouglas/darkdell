@@ -63,6 +63,23 @@ main pre {
 
 main pre code { background: none; padding: 0; }
 
+main blockquote {
+  margin: 1.5rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 3px solid #ccc;
+  font-style: italic;
+  color: #555;
+}
+main blockquote p { margin-bottom: 0.75rem; }
+main blockquote p:last-child { margin-bottom: 0; }
+main blockquote blockquote {
+  margin: 0.5rem 0 0.5rem 1rem;
+  border: none;
+  background: none;
+  padding: 0 0 0 1rem;
+  transform: none;
+}
+
 .post-list { list-style: none; }
 .post-list li { padding: 0.4rem 0; border-bottom: 1px solid #f0f0f0; }
 .post-list time { color: #999; font-size: 0.85rem; margin-right: 0.5rem; }

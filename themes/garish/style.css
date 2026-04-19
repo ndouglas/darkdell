@@ -96,6 +96,34 @@ main pre {
 
 main pre code { background: none; color: #00ff00; font-family: monospace; }
 
+main blockquote {
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem 1rem 2.5rem;
+  border: 3px dashed #00ffff;
+  background: rgba(255, 255, 0, 0.5);
+  border-radius: 12px;
+  transform: rotate(-0.5deg);
+}
+main blockquote::before {
+  content: '\275D';
+  position: absolute;
+  top: 0.25rem;
+  left: 0.5rem;
+  font-size: 2rem;
+  color: #ff00ff;
+  line-height: 1;
+}
+main blockquote p { margin-bottom: 0.75rem; }
+main blockquote p:last-child { margin-bottom: 0; }
+main blockquote blockquote {
+  margin: 0.5rem 0 0.5rem 1rem;
+  border: none;
+  background: none;
+  padding: 0 0 0 1rem;
+  transform: none;
+}
+
 .post-list { list-style: none; }
 .post-list li {
   padding: 0.5rem;

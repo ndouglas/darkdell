@@ -5,6 +5,7 @@ People whom I try to keep up with. I think this was called a blogroll for a whil
 - [Callan McGill](https://boarders.github.io)
 - [Cameron Eagans](https://cweagans.net)
 - [Chance Chapman](https://rollofthedice2.substack.com)
+- [Daniel Drezner](https://danieldrezner.substack.com/)
 - [Elijah Lynn](https://www.elijahlynn.net)
 - [Grace Kind](https://gracekind.net)
 - [Lorin Hochstein](https://surfingcomplexity.blog/)

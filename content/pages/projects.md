@@ -2,6 +2,8 @@
 
 A non-exhaustive list of things I've built or am building.
 
+I often name projects after castles from _A Song of Ice and Fire_, which saves me from bikeshedding too much.
+
 - 🪱 **[Bitwit](https://bit-wit.com/)**: Learn math and CS with spaced repetition.
 - 📝 **[Darkdell](https://darkdell.net)**: My blog, driven by an SSG. You're already here TBH.
 - 🦷 **[Goldentooth](https://clog.goldentooth.net)**: Changelog for my k8s/infra sandbox minilab.

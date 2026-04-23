@@ -187,6 +187,8 @@ def _build_blog_sections(
 
         seen_slugs: dict[str, Path] = {}
         for md_file in sorted(posts_dir.rglob("*.md")):
+            if md_file.name.startswith("_"):
+                continue
             relative = md_file.relative_to(posts_dir)
             date, slug = extract_post_date_and_slug(relative)
             raw = md_file.read_text()
@@ -214,7 +216,12 @@ def _build_blog_sections(
         # Render section index
         index_dir = public / url_prefix
         index_dir.mkdir(parents=True, exist_ok=True)
-        blog_list_html = f"<h1>{index_title}</h1>\n<ul class=\"post-list\">\n"
+        blog_list_html = f"<h1>{index_title}</h1>\n"
+        intro_file = posts_dir / "_intro.md"
+        if intro_file.exists():
+            intro_parsed = parse_content(intro_file.read_text(), filename=intro_file.name)
+            blog_list_html += f'<div class="section-intro">{intro_parsed["html"]}</div>\n'
+        blog_list_html += "<ul class=\"post-list\">\n"
         for post in posts:
             date_str = post["date"].strftime("%Y-%m-%d")
             blog_list_html += (
@@ -373,6 +380,8 @@ def build_site(site_dir: Path) -> None:
         posts_dir = site_dir / "content" / content_subdir
         if posts_dir.exists():
             for md_file in posts_dir.rglob("*.md"):
+                if md_file.name.startswith("_"):
+                    continue
                 relative = md_file.relative_to(posts_dir)
                 date, _ = extract_post_date_and_slug(relative)
                 all_post_dates.append(date)

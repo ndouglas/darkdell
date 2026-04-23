@@ -140,6 +140,34 @@ def test_build_finds_nested_posts(tmp_site):
     assert "Hello World" in output.read_text()
 
 
+def test_intro_renders_on_section_index(tmp_site):
+    """An _intro.md in a section dir renders above the post list."""
+    (tmp_site / "content" / "posts" / "_intro.md").write_text(
+        "These are my posts about stuff."
+    )
+    from build import build_site
+    build_site(tmp_site)
+    index_html = (tmp_site / "public" / "blog" / "index.html").read_text()
+    assert "These are my posts about stuff." in index_html
+    # Intro appears before the post list
+    assert index_html.index("These are my posts about stuff.") < index_html.index(
+        'class="post-list"'
+    )
+
+
+def test_intro_not_rendered_as_post(tmp_site):
+    """An _intro.md is not treated as a post (no individual page, not in list)."""
+    (tmp_site / "content" / "posts" / "_intro.md").write_text("Intro prose.")
+    from build import build_site
+    build_site(tmp_site)
+    assert not (tmp_site / "public" / "blog" / "_intro").exists()
+    index_html = (tmp_site / "public" / "blog" / "index.html").read_text()
+    # Intro body shouldn't show up inside the <ul> post list
+    list_start = index_html.index('<ul class="post-list">')
+    list_end = index_html.index("</ul>", list_start)
+    assert "Intro prose." not in index_html[list_start:list_end]
+
+
 def test_build_errors_on_slug_collision(tmp_site):
     """Building fails with clear error if two posts produce the same slug."""
     colliding = tmp_site / "content" / "posts" / "2026" / "04"

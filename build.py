@@ -112,11 +112,104 @@ def _parse_monthly_files(content_dir: Path) -> list[dict]:
         months.append({
             "year": year,
             "month": month,
+            "raw_body": body,
             "html": html,
             "sort_key": (-year, -month),
         })
     months.sort(key=lambda m: m["sort_key"])
     return months
+
+
+MAX_TITLE_CHARS = 120
+
+
+def _cap_title(s: str) -> str:
+    """Cap a candidate title at MAX_TITLE_CHARS, preferring a word boundary."""
+    s = s.strip()
+    if len(s) <= MAX_TITLE_CHARS:
+        return s
+    prefix = s[:MAX_TITLE_CHARS]
+    last_space = prefix.rfind(" ")
+    if last_space > MAX_TITLE_CHARS // 2:
+        return prefix[:last_space].rstrip(",;:- ") + "…"
+    return prefix.rstrip() + "…"
+
+
+def _extract_bullet_title(bullet: str) -> str:
+    """Derive a concise title from a bullet's markdown.
+
+    Cases handled (in order):
+    - Starts with `**Bold**` or `*Italic*` or `_Italic_`: use the emphasised text.
+    - Otherwise: use the first sentence (up to '.', '?', '!'), capped.
+    - As a final fallback: use the full bullet, capped.
+    All results are run through `_cap_title` so titles stay under 120 chars.
+    """
+    s = bullet.strip()
+    # Check double-asterisk bold before single-asterisk italic.
+    for open_c, close_c in (("**", "**"), ("*", "*"), ("_", "_")):
+        if s.startswith(open_c):
+            end = s.find(close_c, len(open_c))
+            if end > len(open_c):
+                return _cap_title(s[len(open_c):end])
+    first_end = min(
+        (i for i in (s.find(p) for p in ".!?") if i != -1),
+        default=-1,
+    )
+    if first_end > 0:
+        return _cap_title(s[:first_end])
+    return _cap_title(s)
+
+
+def _parse_monthly_bullets(months: list[dict]) -> list[dict]:
+    """Flatten monthly files into one entry per bullet, newest-first.
+
+    Each returned dict has:
+        year, month, index, title, description_html, pub_date
+
+    `pub_date` is `datetime(year, month, 1)` with a per-bullet offset in
+    seconds so RSS readers can keep entries ordered within a month.
+    """
+    bullets: list[dict] = []
+    for m in months:
+        # Split raw markdown body on top-level bullet lines. Only `- ` bullets
+        # at the start of a line count; indented continuations fold into the
+        # preceding bullet.
+        current: list[str] = []
+        all_bullets: list[str] = []
+        for line in m["raw_body"].splitlines():
+            if line.startswith("- "):
+                if current:
+                    all_bullets.append("\n".join(current))
+                current = [line[2:]]
+            elif current and (line.startswith("  ") or line.strip() == ""):
+                current.append(line)
+            else:
+                if current:
+                    all_bullets.append("\n".join(current))
+                    current = []
+        if current:
+            all_bullets.append("\n".join(current))
+
+        for i, body in enumerate(all_bullets):
+            if not body.strip():
+                continue
+            title = _extract_bullet_title(body)
+            description_html = markdown.markdown(body, extensions=MD_EXTENSIONS)
+            pub_date = datetime(m["year"], m["month"], 1, tzinfo=timezone.utc)
+            # Stagger pub_date within a month by bullet index (seconds) so
+            # newest bullets sort first in aggregators.
+            pub_date = pub_date.replace(
+                second=min(59, (len(all_bullets) - i - 1) % 60)
+            )
+            bullets.append({
+                "year": m["year"],
+                "month": m["month"],
+                "index": i,
+                "title": title,
+                "description_html": description_html,
+                "pub_date": pub_date,
+            })
+    return bullets
 
 
 def _build_rss_feed(items: list[dict], section: str, title: str, description: str) -> str:
@@ -313,16 +406,18 @@ def _build_monthly_section(
         )
         (year_dir / "index.html").write_text(page_html)
 
-    # RSS feed
+    # RSS feed — one item per bullet rather than per month, so downstream
+    # consumers get a usable per-entry title instead of a month header.
+    bullets = _parse_monthly_bullets(months)
     feed_items = [
         {
-            "title": f"{calendar.month_name[m['month']]} {m['year']}",
-            "link": f"{SITE_URL}/{section}/{m['year']}/",
-            "guid": f"{section}-{m['year']}-{m['month']:02d}",
-            "pub_date": datetime(m["year"], m["month"], 1, tzinfo=timezone.utc),
-            "description": m["html"],
+            "title": b["title"],
+            "link": f"{SITE_URL}/{section}/{b['year']}/",
+            "guid": f"{section}-{b['year']}-{b['month']:02d}-{b['index']}",
+            "pub_date": b["pub_date"],
+            "description": b["description_html"],
         }
-        for m in months
+        for b in bullets
     ]
     feed_xml = _build_rss_feed(
         feed_items, section, f"Nathan Douglas — {title}", title

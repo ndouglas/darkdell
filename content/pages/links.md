@@ -10,6 +10,8 @@ People whom I try to keep up with. I think this was called a blogroll for a whil
 - [Daniel Drezner](https://danieldrezner.substack.com/)
 - [Elijah Lynn](https://www.elijahlynn.net)
 - [Grace Kind](https://gracekind.net)
+- [Jonathan Stegall](https://jonathanstegall.com/)
+- [Ky Decker](https://ky.fyi/)
 - [Lorin Hochstein](https://surfingcomplexity.blog/)
 - [Nav Rao](https://theperfectlycromulent.substack.com)
 - [Quinn Dougherty](https://newsletter.for-all.dev)

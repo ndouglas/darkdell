@@ -1,0 +1,7 @@
+# Slack
+
+> Quite a different reaction to the discovery of slack occurs when the discoverer asks himself, after having got over his initial shock, whether slack may not after all be a good thing, a blessing in disguise.<br>
+> The idea that slack fulfills some important, if unintended or latent, functions was put forth by Cyert and Marsh, who point out that it permits firms to ride out adverse market or other developments. During such bad times slack acts like a reserve that can be called upon: excess costs will be cut, innovations that were already within one's grasp will at last be introduced, more aggressive sales behavior that had been shunned will now be engaged in, and so on.<br>
+> Slack in the political system has been rationalized in a very similar manner. The discovery that citizens do not normally use more than a fraction of their political resources came originally as a surprise and disappointment to political scientists who had been brought up to believe that democracy requires for its functioning the fullest possible participation of all citizens. But soon enough a degree of apathy was found to have some compensating advantages in as much as it contributes to the stability and flexibility of a political system and provides for "reserves" of political resources which can be thrown into the battle in crisis situations.<br>
+>
+> - Albert O. Hirschman, _Exit, Voice, and Loyalty_

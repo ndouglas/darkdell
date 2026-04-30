@@ -16,6 +16,9 @@
   var MAX_PHEROMONE = 255;
   var FOOD_RESPAWN_TICKS = 600;
   var MAX_DAYS = 60;
+  var FOOD_DECAY_PER_TICK = 0.0001;
+  var MAX_FOOD_SOURCES = 300;
+  var FOOD_PER_LETTER = 4;
 
   // Inbound channels (carrying food home) — warm tones
   var INBOUND_CHANNELS = [
@@ -90,18 +93,27 @@
     };
   }
 
+  function enforceCap() {
+    if (foods.length <= MAX_FOOD_SOURCES) return;
+    foods.sort(function (a, b) { return a.depositedAt - b.depositedAt; });
+    foods = foods.slice(foods.length - MAX_FOOD_SOURCES);
+  }
+
   function spawnFoods(count) {
     for (var i = 0; i < count; i++) {
       var food = {
         x: rand(GRID_W),
         y: rand(GRID_H),
-        amount: FOOD_PER_SOURCE
+        amount: FOOD_PER_SOURCE,
+        source: 'random',
+        depositedAt: Date.now()
       };
       if (Math.abs(food.x - hive.x) < 5 && Math.abs(food.y - hive.y) < 5) {
         food.x = wrap(food.x + 20, GRID_W);
       }
       foods.push(food);
     }
+    enforceCap();
   }
 
   function calcVitality() {
@@ -122,6 +134,10 @@
     var decay = DECAY_RATE * (0.3 + 0.7 * vitality);
     for (var j = 0; j < grid.length; j++) {
       grid[j] = Math.max(0, grid[j] - decay);
+    }
+
+    for (var k = 0; k < foods.length; k++) {
+      foods[k].amount = Math.max(0, foods[k].amount - FOOD_DECAY_PER_TICK);
     }
 
     tickCounter++;

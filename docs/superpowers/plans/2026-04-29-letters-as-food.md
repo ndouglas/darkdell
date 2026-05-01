@@ -14,13 +14,13 @@
 
 ## File Structure
 
-| File | Action | Responsibility |
-| --- | --- | --- |
-| `themes/consumed/ants.js` | Modify | Existing simulation; add food provenance, decay, cap, helpers, click handler, sessionStorage I/O |
-| `themes/consumed/style.css` | Modify | Add `body.darkdell-dissolving main` opacity+blur rule |
-| `themes/switcher.js` | Modify (small) | Notify ants module on theme switch so it can install/remove the click handler |
-| `tests/ants/test-ants.html` | Create | Self-contained in-browser test page; runs `console.assert` calls against the pure helpers |
-| `.gitignore` | No change | (already excludes `public/`) |
+| File                        | Action         | Responsibility                                                                                   |
+| --------------------------- | -------------- | ------------------------------------------------------------------------------------------------ |
+| `themes/consumed/ants.js`   | Modify         | Existing simulation; add food provenance, decay, cap, helpers, click handler, sessionStorage I/O |
+| `themes/consumed/style.css` | Modify         | Add `body.darkdell-dissolving main` opacity+blur rule                                            |
+| `themes/switcher.js`        | Modify (small) | Notify ants module on theme switch so it can install/remove the click handler                    |
+| `tests/ants/test-ants.html` | Create         | Self-contained in-browser test page; runs `console.assert` calls against the pure helpers        |
+| `.gitignore`                | No change      | (already excludes `public/`)                                                                     |
 
 `tests/ants/test-ants.html` is opened directly via `file://` to verify the pure helpers. It is not part of the build output (build.py only copies `static/` and `themes/`, not `tests/`).
 

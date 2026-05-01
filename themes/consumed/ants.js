@@ -131,9 +131,15 @@
       stepAnt(ants[i]);
     }
 
-    var decay = DECAY_RATE * (0.3 + 0.7 * vitality);
+    // Warm (inbound) channels fade faster than cool (outbound) so the
+    // background drifts deeper/cooler over time while active trail heads
+    // stay warm.
+    var baseDecay = DECAY_RATE * (0.3 + 0.7 * vitality);
+    var warmDecay = baseDecay * 1.3;
+    var coolDecay = baseDecay * 0.75;
     for (var j = 0; j < grid.length; j++) {
-      grid[j] = Math.max(0, grid[j] - decay);
+      var rate = (j % NUM_CHANNELS) < INBOUND_CHANNELS.length ? warmDecay : coolDecay;
+      grid[j] = Math.max(0, grid[j] - rate);
     }
 
     for (var k = 0; k < foods.length; k++) {

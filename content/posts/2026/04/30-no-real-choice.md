@@ -1,0 +1,7 @@
+# No Real Choice
+
+> ...The basic point is that competition may result merely in the mutual luring away of each others' customers on the part of a group of competing firms; and that to this extent competition and product diversification is wasteful and diversionary especially when, in its absence, consumers would either be able to bring more effective pressures upon management toward product improvement or would stop using up their energies in a futile search for the "ideal" product.<br>
+> It will be immediately evident that competitive political systems have frequently been portrayed in just these terms. Radical critics of societies with stable party systems have often denounced the competition of the dominant parties as offering "no real choice." It is of course a very open question whether, in the absence of the competitive party system, citizens would be better able to achieve fundamental social and political changes (assuming, for the sake of the argument, that such changes are desirable).<br>
+> Nevertheless the radical critique is correct in pointing out that competitive political systems have a considerable capacity to divert what might otherwise be a revolutionary ground swell into tame discontent with the governing party. Although this capacity may normally be an asset, one can surely conceive of circumstances under which it would turn into a liability.
+>
+> - Albert O. Hirschman, _Exit, Voice, and Loyalty_

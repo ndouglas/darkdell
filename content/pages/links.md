@@ -11,6 +11,7 @@ People whom I try to keep up with. I think this was called a blogroll for a whil
 - [Elijah Lynn](https://www.elijahlynn.net)
 - [Grace Kind](https://gracekind.net)
 - [Jonathan Stegall](https://jonathanstegall.com/)
+- [Inanna Malick](https://recursion.wtf)
 - [Ky Decker](https://ky.fyi/)
 - [Lorin Hochstein](https://surfingcomplexity.blog/)
 - [Nav Rao](https://theperfectlycromulent.substack.com)

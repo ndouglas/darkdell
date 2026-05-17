@@ -8,6 +8,7 @@ In this preface they will most likely expect me to say something conventional, t
 
 I was born in Martin, Kentucky, in 1980 to John and Linda (née Neeley) Hardwick.
 
+<!--
 My father was a Vietnam veteran. He had curly hair and a beard and kept tins of strong smelling mints. Sometimes the tins contained some kind of plant matter, which smelled interesting but I didn't appreciate at the time. He smoked occasionally, drank occasionally, and was a quiet, caring man who enjoyed a number of good, if perhaps not incredibly close, friendships. I never saw him out of control, or terribly angry.
 
 My mother was a large woman, not tall except to me. She was boisterous and intelligent, funny. She did not differentiate between a person begging for change on a street and a policeman or doctor or the manager of a department store (which is about as far up the social ladder as we ever got). She was equally honest, generous, compassionate, and direct with each.
@@ -47,5 +48,6 @@ Without my father's income, we were very, very poor. My mother couldn't bear to 
 I made a new friend, S. F. He was intensely intelligent, very practical, very sharp. As I learned when we shared a computing class together, he had good engineering skill already, by which I mean to say that he had good attention to detail and a great ability to decompose problems into smaller problems and solve them.
 
 I was not like that. I was more interested in experimentation, with trial and error. I was starting to have issues with mathematics, with functioning in class. I would miss things, and then not have any idea how to do the homework, and not have anyone I could ask (and, frankly, not an overwhelming abundance of desire to figure it out myself).
+-->
 
 To be continued...

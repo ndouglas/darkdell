@@ -10,6 +10,4 @@ But, nevertheless, here I am thinking it might be good to keep a blog, and the r
 
 While I'm an autodidact, like most other geeks, I never got along well with technical books. I tended to learn by trial and error, cobbling together snippets from free websites and blogs, etc. When I was young, I tended to blame this on poverty. Now that I'm a well-compensated adult, I can afford technical books, but I still tend to struggle with reading them. I blame neurodivergence. Anyway, I'm hoping that a blog will help me structure and retain more of the information that I read.
 
-I'm learning French, and I realized earlier today while [responding to a comment](https://news.ycombinator.com/item?id=47544371) that my actual _production_ of written French is rather limited. I practice listening a lot, and I'm starting to practice reading a decent amount (I think it's my strongest area), but I'm not actually _writing_ much. So I've forked my blog entries and will try to write an entry per day [_en français_](https://darkdell.net/fr/).
-
 So let's see how this goes!

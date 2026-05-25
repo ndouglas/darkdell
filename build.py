@@ -257,10 +257,7 @@ def _render_template(template_str: str, title: str, content: str, last_post_date
 
 BLOG_SECTIONS = [
     ("posts", "blog", "Blog", "Nathan Douglas's blog"),
-    ("posts-fr", "fr", "Blog (Français)", "Le blog de Nathan Douglas (en français)"),
 ]
-
-BLOG_LABELS = {"blog": "EN", "fr": "FR"}
 
 
 def _build_blog_sections(
@@ -348,11 +345,9 @@ def _build_blog_sections(
     snippet = '\n<h2>Recent Posts</h2>\n<ul class="post-list">\n'
     for post, url_prefix in recent:
         date_str = post["date"].strftime("%Y-%m-%d")
-        label = BLOG_LABELS.get(url_prefix, "")
         snippet += (
             f'  <li><time datetime="{date_str}">{date_str}</time> '
-            f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a>'
-            f" ({label})</li>\n"
+            f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a></li>\n'
         )
     snippet += "</ul>"
     return snippet

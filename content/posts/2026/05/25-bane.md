@@ -10,6 +10,7 @@ As it turned out, Radio Shack only had a couple video games - a few new ones, wh
 
 > True FRP Simulation!<br>
 > Like a true game master. Bane of the Cosmic Forge rolls the dice, consults its charts and applies the rules. From the 400 items of armor and weaponry researched for authenticity - right down to their weights - to the realistic combat structure - incorporating Primary and Secondary attack- everything, absolutely everything, is calculated.<br>
+>
 > Full-Color, Animated Graphics!<br>
 > You'll see swords swinging before your eyes; creatures of all shapes and forms will move before you; spells coming from your magician will swirl through the air. You'll walk under gargoyle-laden arches and watch candles flicker in their sconces.
 > Your PC's internal speaker will play all of these digitized sounds without any add-on hardware. swords swinging, monsters venting their anger and spells letting fly.
@@ -34,5 +35,5 @@ Anyway, I'm working now on reverse-engineering this game and creating an accurat
 
 _Zork_ is now open-source; _Wizardry VI_ is not, and that requires a lot of reverse engineering... but nevertheless, the tools exist.
 
-I'm still in the early stages, but you can find my port here: https://wiz6.goldentooth.net/ It also includes a rich-featured data explorer to look at the sprites and fonts, demonstrate how images and text are drawn to the screen, dive into the decompiled functions, tinker with game mechanics, etc. If you check it out, I hope you enjoy! 😊
+I'm still in the early stages, but you can find my port here: [https://wiz6.goldentooth.net/](https://wiz6.goldentooth.net/) It also includes a rich-featured data explorer to look at the sprites and fonts, demonstrate how images and text are drawn to the screen, dive into the decompiled functions, tinker with game mechanics, etc. If you check it out, I hope you enjoy! 😊
 

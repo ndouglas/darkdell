@@ -66,6 +66,31 @@ def _humanize_filename(filename: str) -> str:
     return stem.replace("-", " ").replace("_", " ").title()
 
 
+def render_title_html(title: str) -> str:
+    """Render a title's inline markdown to HTML, without the wrapping <p>."""
+    html = markdown.markdown(title).strip()
+    if html.startswith("<p>") and html.endswith("</p>"):
+        html = html[3:-4]
+    return html
+
+
+_INLINE_MD_PATTERNS = [
+    (re.compile(r"\*\*(.+?)\*\*"), r"\1"),
+    (re.compile(r"__(.+?)__"), r"\1"),
+    (re.compile(r"(?<!\w)\*([^*\s].*?)\*(?!\w)"), r"\1"),
+    (re.compile(r"(?<!\w)_([^_\s].*?)_(?!\w)"), r"\1"),
+    (re.compile(r"`([^`]+)`"), r"\1"),
+]
+
+
+def strip_title_markdown(title: str) -> str:
+    """Strip inline markdown markers from a title for plain-text contexts."""
+    s = title
+    for pattern, repl in _INLINE_MD_PATTERNS:
+        s = pattern.sub(repl, s)
+    return s
+
+
 def extract_post_date_and_slug(relative_path: Path) -> tuple[datetime, str]:
     """Extract date and slug from a nested post path like 2026/03/25-hello-world.md.
 
@@ -300,7 +325,9 @@ def _build_blog_sections(
         for post in posts:
             post_dir = public / url_prefix / post["slug"]
             post_dir.mkdir(parents=True, exist_ok=True)
-            html = _render_template(template_str, post["title"], post["html"], last_post_date)
+            html = _render_template(
+                template_str, strip_title_markdown(post["title"]), post["html"], last_post_date
+            )
             (post_dir / "index.html").write_text(html)
 
         # Render section index
@@ -316,7 +343,7 @@ def _build_blog_sections(
             date_str = post["date"].strftime("%Y-%m-%d")
             blog_list_html += (
                 f'  <li><time datetime="{date_str}">{date_str}</time> '
-                f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a></li>\n'
+                f'<a href="/{url_prefix}/{post["slug"]}/">{render_title_html(post["title"])}</a></li>\n'
             )
         blog_list_html += "</ul>"
         html = _render_template(template_str, index_title, blog_list_html, last_post_date)
@@ -325,7 +352,7 @@ def _build_blog_sections(
         # RSS feed
         feed_items = [
             {
-                "title": p["title"],
+                "title": strip_title_markdown(p["title"]),
                 "link": f"{SITE_URL}/{url_prefix}/{p['slug']}/",
                 "guid": f"{SITE_URL}/{url_prefix}/{p['slug']}/",
                 "pub_date": p["date"].replace(tzinfo=timezone.utc),
@@ -347,7 +374,7 @@ def _build_blog_sections(
         date_str = post["date"].strftime("%Y-%m-%d")
         snippet += (
             f'  <li><time datetime="{date_str}">{date_str}</time> '
-            f'<a href="/{url_prefix}/{post["slug"]}/">{post["title"]}</a></li>\n'
+            f'<a href="/{url_prefix}/{post["slug"]}/">{render_title_html(post["title"])}</a></li>\n'
         )
     snippet += "</ul>"
     return snippet
@@ -504,7 +531,9 @@ def build_site(site_dir: Path) -> None:
                 out_dir = public / slug
                 out_dir.mkdir(parents=True, exist_ok=True)
 
-            html = _render_template(template_str, parsed["title"], parsed["html"], last_post_date)
+            html = _render_template(
+                template_str, strip_title_markdown(parsed["title"]), parsed["html"], last_post_date
+            )
             (out_dir / "index.html").write_text(html)
 
     # Copy static files

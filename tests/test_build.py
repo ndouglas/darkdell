@@ -42,6 +42,45 @@ def test_markdown_renders_to_html():
     assert "<strong>world</strong>" in result["html"]
 
 
+def test_render_title_html_renders_italic():
+    """Inline markdown in a title renders to HTML without a wrapping <p>."""
+    from build import render_title_html
+    assert render_title_html("_Wizardry VI_") == "<em>Wizardry VI</em>"
+    assert render_title_html("**Bold** and `code`") == "<strong>Bold</strong> and <code>code</code>"
+
+
+def test_strip_title_markdown_removes_markers():
+    """Plain-text title strips italic/bold/code markers."""
+    from build import strip_title_markdown
+    assert strip_title_markdown("_Wizardry VI: Bane of the Cosmic Forge_") == (
+        "Wizardry VI: Bane of the Cosmic Forge"
+    )
+    assert strip_title_markdown("**Bold** and `code`") == "Bold and code"
+    assert strip_title_markdown("No formatting here") == "No formatting here"
+
+
+def test_blog_index_renders_markdown_in_titles(tmp_site):
+    """Blog index link text renders italic from a markdown title."""
+    md = tmp_site / "content" / "posts" / "2026" / "03" / "26-italic.md"
+    md.write_text("# _Italicized Title_\n\nBody.")
+    from build import build_site
+    build_site(tmp_site)
+    index = (tmp_site / "public" / "blog" / "index.html").read_text()
+    assert "<em>Italicized Title</em>" in index
+    assert "_Italicized Title_" not in index
+
+
+def test_rss_feed_title_is_plain(tmp_site):
+    """RSS feed item title strips markdown markers."""
+    md = tmp_site / "content" / "posts" / "2026" / "03" / "26-italic.md"
+    md.write_text("# _Italicized Title_\n\nBody.")
+    from build import build_site
+    build_site(tmp_site)
+    feed = (tmp_site / "public" / "blog" / "feed.xml").read_text()
+    assert "<title>Italicized Title</title>" in feed
+    assert "_Italicized Title_" not in feed
+
+
 def test_no_frontmatter_works():
     """A bare markdown file with no frontmatter parses fine."""
     from build import parse_content

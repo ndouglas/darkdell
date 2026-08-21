@@ -55,19 +55,27 @@ The **L** is for "Lawful," signifying that I'm on the side of everything that is
 
 The **DV** and **PV** represent "Defensive Value" and "Protection Value" and indicate your ability to avoid suffering damage and to minimize the damage suffered. **H** are "Hit Points", **P** are "Power Points" (used for magic), **Exp** for "Experience" (level/XP), a location code ("DrCh" means "Drakalor Chain"), and **Sp** for "Speed". This indicates how frequently you can act. With a speed of 102, I can act 102 times for every 100 times that a creature with speed 100 could act.
 
-The little Claude logo there is a cave. Being genre-savvy, I'll enter it.
+Now might be a good time to check our inventory:
 
-![An Unassuming Cave](/images/2026-08-21-adom-010.png)
+![My Inventory](/images/2026-08-21-adom-010.png)
+
+Elven chain mail (nice, seems more congruent with the "wealthy family" narrative than the "struggling apprentice" bit), a dagger, a long bow, and... 11 (eleven) arrows. Eleven arrows? For an archer? Ah, but we have the fletchery set.
+
+Here, stones is a unit of weight, so notice that with my basic equipment, I'm already carrying 1/3 of my capacity. Does not bode well.
+
+Back to the map - the little Claude logo there is a cave. Being genre-savvy, I'll enter it.
+
+![An Unassuming Cave](/images/2026-08-21-adom-011.png)
 
 So we're dropped into a cave with no apparent way to progress.
 
 Again, being genre-savvy, I'll **[s]earch** along the walls, at which point a door will appear.
 
-![An Unassuming Door](/images/2026-08-21-adom-011.png)
+![An Unassuming Door](/images/2026-08-21-adom-012.png)
 
 That's cool! Surely, a secret door will have something cool behind it.
 
-![A New Friend!](/images/2026-08-21-adom-012.png)
+![A New Friend!](/images/2026-08-21-adom-013.png)
 
 Oh, a goblin. How long have you been trapped behind a secret door in this cave, goblin? Don't worry, I'll help you escape!
 
@@ -75,10 +83,12 @@ Oh, a goblin. How long have you been trapped behind a secret door in this cave, 
 
 I'm not going to give a full blow-by-blow here. This is a classic roguelike: the bad guys are letters, the tactics are fairly basic, and you might be able to get some loot off their corpses.
 
-![One-Shotted the Goblin](/images/2026-08-21-adom-013.png)
+![One-Shotted the Goblin](/images/2026-08-21-adom-014.png)
 
-But the next one is fairly important, because this is where you start to see some real issues with the design of this game.
+But the next bit is fairly important, because this is where the real issues with the design of this game start to emerge.
 
-![A Rat Corpse](/images/2026-08-21-adom-014.png)
-![Tasty!](/images/2026-08-21-adom-014.png)
+![A Rat Corpse](/images/2026-08-21-adom-015.png)
+![Tasty!](/images/2026-08-21-adom-016.png)
+
+I fight a giant rat, overcome it, and eat it raw. High elves, in Ancardia, are built a little different from the elves you might've encountered in other fantasy games. But that rather surprising culinary experience isn't the whole issue; I'll come back to this later.
 

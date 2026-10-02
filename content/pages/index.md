@@ -15,6 +15,7 @@ Although I should know better, you can also find me on social media:
 - [BlueSky](https://bsky.app/profile/tenesm.us)
 - [HackerNews](https://news.ycombinator.com/user?id=nathan_douglas)
 - [LinkedIn](https://linkedin.com/in/nug-doug/)
+- [YouTube](https://youtube.com/@nathandouglas6500)
 - [Letterboxd](https://letterboxd.com/supertempt768/)
 - [RateYourMusic](https://rateyourmusic.com/~NathanDouglas)
 

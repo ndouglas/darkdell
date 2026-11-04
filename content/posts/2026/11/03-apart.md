@@ -13,3 +13,7 @@ I don't deserve it, really - I relied on Claude a lot for this project. But I *w
 They invited me to fill out a form - a grant application, really - for grantmaking.io and the Apart Studio, which is a possible path to the Apart Fellowship. I don't know if I will be accepted into the Studio, much less the Fellowship. I don't know if I'll be picked up for the Generator Residency or the Pivotal Fellowship. But I'll make my way, and I will get in eventually. I will earn my place.
 
 I have a plan.
+
+Today, I realized that I've been taking the wrong approach. I've been hiding parts of myself from science. I've been withholding myself. And it's a cliché, I think, but I wasn't really going in all of the way - because I was afraid of what would happen if I failed. I was half-assing it, signaling, hoping that someone would see what I was doing and swoop down and rescue me and pay me a lot of money to do some kind of sinecure job. Because I didn't have sufficient faith in myself, still, to really give it my all.
+
+No more. That ended today. I'm going to dance in math and science and engineering for as long as I can. Decades if possible.
